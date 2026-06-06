@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Portfolio | Junxian Lyken Lin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="lang-zh">
+    <!-- Dynamic Background Elements -->
+    <div class="bg-gradient-1"></div>
+    <div class="bg-gradient-2"></div>
+    <div class="grid-overlay"></div>
+
+    <nav id="navbar">
+        <div class="nav-content">
+            <div class="logo">
+                <span class="lang-zh">林俊贤的主页</span>
+                <span class="lang-en">Lyken's Portfolio</span>
+            </div>
+            <ul class="nav-links">
+                <li>
+                    <a href="#hero">
+                        <span class="lang-zh">首页</span>
+                        <span class="lang-en">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#projects">
+                        <span class="lang-zh">项目展示</span>
+                        <span class="lang-en">Projects</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#contact">
+                        <span class="lang-zh">联系方式</span>
+                        <span class="lang-en">Contact</span>
+                    </a>
+                </li>
+                <!-- Language Toggle -->
+                <li>
+                    <button id="lang-toggle" class="btn-lang" title="Toggle Language">
+                        <i class="fa-solid fa-language"></i> <span id="lang-label">EN</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="hero">
+        <div class="container hero-content">
+            <div class="avatar-placeholder reveal">
+                <i class="fa-solid fa-user-astronaut"></i>
+            </div>
+            <h1 class="reveal">
+                <span class="lang-zh">Hi 👋，我是 <span class="highlight">林俊贤</span></span>
+                <span class="lang-en">Hey 👋, I'm <span class="highlight">Junxian Lyken Lin</span></span>
+            </h1>
+            <p class="subtitle reveal">
+                <span class="lang-zh">数据科学家 | 探索数据，构建基于大语言模型的自主智能体。</span>
+                <span class="lang-en">Data Scientist | Exploring data, building LLM-powered autonomous agents.</span>
+            </p>
+            <div class="hero-cta reveal">
+                <a href="#projects" class="btn btn-primary">
+                    <span class="lang-zh">查看项目</span>
+                    <span class="lang-en">View Projects</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects">
+        <div class="container">
+            <h2 class="section-title reveal">
+                <span class="lang-zh">核心项目</span>
+                <span class="lang-en">Featured Projects</span>
+            </h2>
+            
+            <div class="projects-wrapper">
+                
+                <!-- Project 1 -->
+                <div class="project-card reveal glass-panel">
+                    <div class="project-image">
+                        <div class="image-placeholder">
+                            <i class="fa-solid fa-robot"></i>
+                            <span>Thumbnail GIF Placeholder</span>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">Llama-3.1-70b</span>
+                            <span class="tag">Streamlit</span>
+                        </div>
+                        <h3>
+                            <span class="lang-zh">智能食谱检索生成系统 (Agentic RecipeRAG)</span>
+                            <span class="lang-en">Agentic RecipeRAG</span>
+                        </h3>
+                        <p class="tagline">
+                            <span class="lang-zh">具备自主决策与量化评估框架的检索生成系统</span>
+                            <span class="lang-en">RAG System with Autonomous Decision & Quantifiable Evaluation</span>
+                        </p>
+                        <p class="description">
+                            <span class="lang-zh">设计并实现了一个基于 ReAct 架构的自主型 RAG (Agentic RAG) 系统，将传统的“硬编码逻辑路由”重构为“大模型原生工具调用”，并建立了一套自动化质量评估体系。</span>
+                            <span class="lang-en">Designed and implemented an Agentic RAG system based on the ReAct architecture, refactoring traditional "hard-coded routing" into "native LLM tool-calling," along with an automated quality evaluation pipeline.</span>
+                        </p>
+                        <div class="highlights">
+                            <h4>
+                                <span class="lang-zh">核心亮点：</span>
+                                <span class="lang-en">Key Highlights:</span>
+                            </h4>
+                            <ul>
+                                <li>
+                                    <span class="lang-zh"><strong>自主智能体：</strong>废弃静态路由，构建 ReAct 思考循环，实现“基于认知的自动化”。</span>
+                                    <span class="lang-en"><strong>Autonomous Agent:</strong> Discarded static routing, built a ReAct thought loop for cognitive-based automation.</span>
+                                </li>
+                                <li>
+                                    <span class="lang-zh"><strong>生产级护栏：</strong>精细化 System Prompt 施加严格安全护栏，精准拦截无关请求。</span>
+                                    <span class="lang-en"><strong>Production Guardrails:</strong> Applied strict safety guardrails via precise prompt engineering to block irrelevant requests.</span>
+                                </li>
+                                <li>
+                                    <span class="lang-zh"><strong>量化评测：</strong>开发自动化 Benchmark，引入 LLM-as-a-Judge 进行语义量化打分。</span>
+                                    <span class="lang-en"><strong>Quantifiable Eval:</strong> Developed an automated benchmark using the LLM-as-a-Judge paradigm for semantic scoring.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="project-actions">
+                            <a href="https://reciperag-ygwnqqpbmfgmesonhbjohh.streamlit.app" target="_blank" class="btn btn-primary">
+                                <i class="fa-solid fa-rocket"></i> 
+                                <span class="lang-zh">运行应用</span>
+                                <span class="lang-en">Launch App</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card reveal glass-panel reverse">
+                    <div class="project-image">
+                        <div class="image-placeholder">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>Thumbnail GIF Placeholder</span>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="tags">
+                            <span class="tag">LLMs</span>
+                            <span class="tag">Statistical Scoring</span>
+                            <span class="tag">Dashboard</span>
+                        </div>
+                        <h3>
+                            <span class="lang-zh">AI 驱动的 RFP 优化与工时管理</span>
+                            <span class="lang-en">AI-Powered RFP Optimization & Capacity Management</span>
+                        </h3>
+                        <p class="tagline">Partner: CGI</p>
+                        <p class="description">
+                            <span class="lang-zh">分析劳动力规划工作流以识别高价值的流程低效点。设计一个结合大模型和统计评分的混合框架来自动化 RFP 工作量估算。</span>
+                            <span class="lang-en">Analyzing workforce planning workflows to identify high-value process inefficiencies. Designing a hybrid framework using LLMs and statistical scoring to automate RFP effort estimation.</span>
+                        </p>
+                        <div class="highlights">
+                            <h4>
+                                <span class="lang-zh">核心亮点：</span>
+                                <span class="lang-en">Key Highlights:</span>
+                            </h4>
+                            <ul>
+                                <li>
+                                    <span class="lang-zh">结合大模型与统计评分的混合 AI 框架。</span>
+                                    <span class="lang-en">Hybrid framework using LLMs and statistical scoring.</span>
+                                </li>
+                                <li>
+                                    <span class="lang-zh">桥接技术信号与业务 ROI 指标的交互式仪表板。</span>
+                                    <span class="lang-en">Interactive dashboard bridging technical AI signals with business ROI metrics.</span>
+                                </li>
+                                <li>
+                                    <span class="lang-zh">预计将为高管层挽回大量可计费工时。</span>
+                                    <span class="lang-en">Projected to recapture significant billable hours for senior leadership.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn btn-disabled" disabled>
+                                <i class="fa-solid fa-clock"></i> 
+                                <span class="lang-zh">敬请期待</span>
+                                <span class="lang-en">Coming Soon</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card reveal glass-panel">
+                    <div class="project-image">
+                        <div class="image-placeholder">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>Thumbnail GIF Placeholder</span>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="tags">
+                            <span class="tag">Machine Learning</span>
+                            <span class="tag">PyTorch</span>
+                            <span class="tag">Python</span>
+                        </div>
+                        <h3>
+                            <span class="lang-zh">视觉语言模型成员推断攻击</span>
+                            <span class="lang-en">Vision-language Model Membership Inference Attack</span>
+                        </h3>
+                        <p class="tagline">Competition Rank #1 (Acc: 0.843)</p>
+                        <p class="description">
+                            <span class="lang-zh">在学校举办的视觉语言模型成员推断竞赛中，以 0.843 的测试集准确率（Accuracy）获得第一名。该项目探讨了多模态大模型在数据识别、隐私与安全性方面的潜在风险。</span>
+                            <span class="lang-en">Achieved first place with a test set accuracy of 0.843 in a university-hosted Vision-Language Model membership inference competition. The project explores the risks of large multimodal models regarding data recognition, privacy, and security.</span>
+                        </p>
+                        <div class="highlights">
+                            <h4>
+                                <span class="lang-zh">核心工作：</span>
+                                <span class="lang-en">Key Contributions:</span>
+                            </h4>
+                            <ul>
+                                <li>
+                                    <span class="lang-zh"><strong>特征工程：</strong>提取并分析了多模态模型的输出置信度与损失景观等行为信号，完成了特征降维。</span>
+                                    <span class="lang-en"><strong>Feature Engineering:</strong> Extracted and analyzed behavioral signals, such as output confidence and loss landscapes, to perform dimensionality reduction.</span>
+                                </li>
+                                <li>
+                                    <span class="lang-zh"><strong>分类流水线：</strong>构建了二分类模型架构，并运用模型集成策略，有效提升了成员推断的准确率与泛化能力。</span>
+                                    <span class="lang-en"><strong>Classification Pipeline:</strong> Developed a binary classification architecture using ensembling strategies to improve inference accuracy and generalization.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="project-actions">
+                            <a href="https://mia-vis-zbwkk8nszprw2qdlbbq8fn.streamlit.app" target="_blank" class="btn btn-primary">
+                                <i class="fa-solid fa-rocket"></i> 
+                                <span class="lang-zh">运行应用</span>
+                                <span class="lang-en">Launch App</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact" class="glass-panel">
+        <div class="container footer-content">
+            <h2>
+                <span class="lang-zh">联系我</span>
+                <span class="lang-en">Let's Connect</span>
+            </h2>
+            <div class="social-links">
+                <a href="#" class="social-icon"><i class="fa-brands fa-github"></i></a>
+                <a href="#" class="social-icon"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#" class="social-icon"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+            <p>
+                <span class="lang-zh">&copy; 2024 林俊贤. 保留所有权利。</span>
+                <span class="lang-en">&copy; 2024 Junxian Lyken Lin. All rights reserved.</span>
+            </p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
