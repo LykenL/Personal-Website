@@ -277,6 +277,10 @@ h1, h2, h3, h4 {
     text-align: center;
 }
 
+.section-title.left-align {
+    text-align: left;
+}
+
 .projects-wrapper {
     display: flex;
     flex-direction: column;
@@ -365,6 +369,138 @@ h1, h2, h3, h4 {
     color: var(--text-main);
 }
 
+/* --- Hobbies Section & Slider --- */
+#hobbies {
+    padding: 8rem 0;
+}
+
+.hobbies-header {
+    margin-bottom: 3rem;
+    max-width: 800px;
+}
+
+.hobby-subtitle {
+    font-size: 2rem;
+    color: var(--accent-1);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.hobby-description {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.hobbies-sliders {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.slider-container {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 24px;
+    overflow: hidden;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+.slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.slider::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.slide {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    aspect-ratio: 3 / 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.slide-placeholder {
+    font-size: 5rem;
+    color: var(--text-muted);
+    opacity: 0.3;
+    z-index: 1;
+}
+
+.slider-btn {
+    position: absolute;
+    top: calc(50% - 1.5rem);
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.slider-btn:hover {
+    background: var(--accent-1);
+    border-color: var(--accent-1);
+    color: var(--bg-main);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.slider-btn.prev {
+    left: 20px;
+}
+
+.slider-btn.next {
+    right: 20px;
+}
+
+.slider-location {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    border-top: 1px solid var(--glass-border);
+}
+
+.slider-location i {
+    color: var(--accent-1);
+    margin-right: 0.5rem;
+}
+
 /* Footer */
 footer {
     padding: 4rem 0;
@@ -406,6 +542,87 @@ footer {
 
 footer p {
     color: var(--text-muted);
+}
+
+/* Contact Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: var(--bg-main);
+    border: 1px solid var(--glass-border);
+    padding: 3rem 4rem;
+    border-radius: 24px;
+    position: relative;
+    max-width: 500px;
+    width: 90%;
+    transform: translateY(30px);
+    transition: all 0.4s cubic-bezier(0.5, 0, 0, 1);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.5) 100%);
+    backdrop-filter: blur(20px);
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0);
+}
+
+.close-modal {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    font-size: 2.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.3s ease;
+    line-height: 1;
+}
+
+.close-modal:hover {
+    color: var(--accent-1);
+}
+
+.modal-body h3 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 1rem;
+}
+
+.modal-body p {
+    font-size: 1.1rem;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.modal-body p i {
+    color: var(--accent-1);
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
 }
 
 /* Reveal Animations */

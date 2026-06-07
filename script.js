@@ -68,4 +68,46 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // 5. Image Slider Logic
+    const sliders = document.querySelectorAll('.slider-container');
+    
+    sliders.forEach(container => {
+        const slider = container.querySelector('.slider');
+        const btnPrev = container.querySelector('.slider-btn.prev');
+        const btnNext = container.querySelector('.slider-btn.next');
+
+        if (slider && btnPrev && btnNext) {
+            btnPrev.addEventListener('click', () => {
+                slider.scrollBy({ left: -slider.offsetWidth, behavior: 'smooth' });
+            });
+
+            btnNext.addEventListener('click', () => {
+                slider.scrollBy({ left: slider.offsetWidth, behavior: 'smooth' });
+            });
+        }
+    });
+
+    // 6. Contact Modal Logic
+    const contactBtn = document.getElementById('contact-btn');
+    const contactModal = document.getElementById('contact-modal');
+    const closeModalBtn = document.querySelector('.close-modal');
+
+    if (contactBtn && contactModal && closeModalBtn) {
+        contactBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            contactModal.classList.add('active');
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            contactModal.classList.remove('active');
+        });
+
+        // Close when clicking outside the modal content
+        contactModal.addEventListener('click', (e) => {
+            if (e.target === contactModal) {
+                contactModal.classList.remove('active');
+            }
+        });
+    }
+
 });

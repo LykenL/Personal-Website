@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
 </head>
-<body class="lang-zh">
+<body class="lang-en">
     <!-- Dynamic Background Elements -->
     <div class="bg-gradient-1"></div>
     <div class="bg-gradient-2"></div>
@@ -36,6 +36,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="#hobbies">
+                        <span class="lang-zh">个人爱好</span>
+                        <span class="lang-en">Hobbies</span>
+                    </a>
+                </li>
+                <li>
                     <a href="#contact">
                         <span class="lang-zh">联系方式</span>
                         <span class="lang-en">Contact</span>
@@ -44,7 +50,7 @@
                 <!-- Language Toggle -->
                 <li>
                     <button id="lang-toggle" class="btn-lang" title="Toggle Language">
-                        <i class="fa-solid fa-language"></i> <span id="lang-label">EN</span>
+                        <i class="fa-solid fa-language"></i> <span id="lang-label">中</span>
                     </button>
                 </li>
             </ul>
@@ -61,8 +67,8 @@
                 <span class="lang-en">Hey 👋, I'm <span class="highlight">Junxian Lyken Lin</span></span>
             </h1>
             <p class="subtitle reveal">
-                <span class="lang-zh">数据科学家 | 探索数据，构建基于大语言模型的自主智能体。</span>
-                <span class="lang-en">Data Scientist | Exploring data, building LLM-powered autonomous agents.</span>
+                <span class="lang-zh">准数据科学家 | 探索数据，构建基于大语言模型的自主智能体。</span>
+                <span class="lang-en">Aspiring Data Scientist | Exploring data, building LLM-powered autonomous agents.</span>
             </p>
             <div class="hero-cta reveal">
                 <a href="#projects" class="btn btn-primary">
@@ -172,11 +178,11 @@
                             </ul>
                         </div>
                         <div class="project-actions">
-                            <button class="btn btn-disabled" disabled>
-                                <i class="fa-solid fa-clock"></i> 
-                                <span class="lang-zh">敬请期待</span>
-                                <span class="lang-en">Coming Soon</span>
-                            </button>
+                            <a href="https://drive.google.com/file/d/1qu8xy5ZFaSs0UOtMYcagBnSz1kttC7U7/view?usp=share_link" target="_blank" class="btn btn-primary">
+                                <i class="fa-solid fa-file-lines"></i> 
+                                <span class="lang-zh">查看项目详情</span>
+                                <span class="lang-en">View Details</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -229,6 +235,77 @@
         </div>
     </section>
 
+    <!-- Hobbies Section -->
+    <section id="hobbies">
+        <div class="container">
+            <div class="hobbies-header reveal">
+                <h2 class="section-title left-align">
+                    <span class="lang-zh">个人爱好</span>
+                    <span class="lang-en">Hobbies</span>
+                </h2>
+                <h3 class="hobby-subtitle">
+                    <i class="fa-solid fa-person-hiking"></i>
+                    <span class="lang-zh">徒步</span>
+                    <span class="lang-en">Hiking</span>
+                </h3>
+                <p class="hobby-description">
+                    <span class="lang-zh">我热衷于探索各种带有坡度与挑战性的地貌。从青翠的草地到泥泞的林间，从崎岖的乱石路到险峻的高山，甚至是覆盖冰雪的冰面，每一次徒步都是一场与自然深度对话的旅程。</span>
+                    <span class="lang-en">I am passionate about exploring diverse and challenging terrains with varying slopes. From lush grasslands to muddy forest trails, from rugged rocky paths to steep mountains, and even icy surfaces, every hike is a journey of deep connection with nature.</span>
+                </p>
+            </div>
+
+            <div class="hobbies-sliders">
+                <!-- Slider 1: Banff & Canmore -->
+                <div class="slider-container reveal glass-panel">
+                    <button class="slider-btn prev" aria-label="Previous image"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="slider">
+                        <div class="slide"><img src="Banff_Can/IMG_3901.jpeg" alt="Banff & Canmore 1" loading="lazy"></div>
+                        <div class="slide"><img src="Banff_Can/dji_mimo_20260420_122334_20260420122334_1776717929531_photo.JPG" alt="Banff & Canmore 2" loading="lazy"></div>
+                        <div class="slide"><img src="Banff_Can/dji_mimo_20260419_105744_20260419165745_1776622203507_photo 2.JPG" alt="Banff & Canmore 3" loading="lazy"></div>
+                        <div class="slide"><img src="Banff_Can/dji_mimo_20260420_121826_20260420121827_1776717931353_photo.jpg" alt="Banff & Canmore 4" loading="lazy"></div>
+                        <div class="slide"><img src="Banff_Can/dji_mimo_20260421_113318_20260421113318_1776800411788_photo.JPG" alt="Banff & Canmore 5" loading="lazy"></div>
+                    </div>
+                    <button class="slider-btn next" aria-label="Next image"><i class="fa-solid fa-chevron-right"></i></button>
+                    <div class="slider-location">
+                        <i class="fa-solid fa-location-dot"></i> Banff & Canmore, AB
+                    </div>
+                </div>
+
+                <!-- Slider 2: Nanaimo -->
+                <div class="slider-container reveal glass-panel">
+                    <button class="slider-btn prev" aria-label="Previous image"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="slider">
+                        <div class="slide"><img src="Nanaimo/IMG_3089.jpeg" alt="Nanaimo 1" loading="lazy"></div>
+                        <div class="slide"><img src="Nanaimo/IMG_3144.jpeg" alt="Nanaimo 2" loading="lazy"></div>
+                        <div class="slide"><img src="Nanaimo/IMG_3069.jpeg" alt="Nanaimo 3" loading="lazy"></div>
+                        <div class="slide"><img src="Nanaimo/IMG_3153.jpeg" alt="Nanaimo 4" loading="lazy"></div>
+                        <div class="slide"><img src="Nanaimo/IMG_3217.jpeg" alt="Nanaimo 5" loading="lazy"></div>
+                    </div>
+                    <button class="slider-btn next" aria-label="Next image"><i class="fa-solid fa-chevron-right"></i></button>
+                    <div class="slider-location">
+                        <i class="fa-solid fa-location-dot"></i> Nanaimo, BC
+                    </div>
+                </div>
+
+                <!-- Slider 3: Vancouver -->
+                <div class="slider-container reveal glass-panel">
+                    <button class="slider-btn prev" aria-label="Previous image"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="slider">
+                        <div class="slide"><img src="GVA/67968eaa863329171858207a381069b5.jpg" alt="Greater Vancouver Area 1" loading="lazy"></div>
+                        <div class="slide"><img src="GVA/IMG_1592.jpeg" alt="Greater Vancouver Area 2" loading="lazy"></div>
+                        <div class="slide"><img src="GVA/IMG_8832.jpeg" alt="Greater Vancouver Area 3" loading="lazy"></div>
+                        <div class="slide"><img src="GVA/fb9c1c0086afa4f5bfb0fb1a3a8c7775.JPG" alt="Greater Vancouver Area 4" loading="lazy"></div>
+                        <div class="slide"><img src="GVA/img_v3_0211f_73a99bb1-e064-4dcb-a309-507b262cde9g.JPG" alt="Greater Vancouver Area 5" loading="lazy"></div>
+                    </div>
+                    <button class="slider-btn next" aria-label="Next image"><i class="fa-solid fa-chevron-right"></i></button>
+                    <div class="slider-location">
+                        <i class="fa-solid fa-location-dot"></i> Greater Vancouver Area
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer id="contact" class="glass-panel">
         <div class="container footer-content">
             <h2>
@@ -236,9 +313,8 @@
                 <span class="lang-en">Let's Connect</span>
             </h2>
             <div class="social-links">
-                <a href="#" class="social-icon"><i class="fa-brands fa-github"></i></a>
-                <a href="#" class="social-icon"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="#" class="social-icon"><i class="fa-solid fa-envelope"></i></a>
+                <a href="https://www.linkedin.com/in/junxian-lin-89127a371/" target="_blank" class="social-icon" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#" id="contact-btn" class="social-icon" title="Contact Info"><i class="fa-solid fa-envelope"></i></a>
             </div>
             <p>
                 <span class="lang-zh">&copy; 2024 林俊贤. 保留所有权利。</span>
@@ -247,6 +323,26 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- Contact Modal -->
+    <div id="contact-modal" class="modal-overlay">
+        <div class="modal-content glass-panel">
+            <span class="close-modal">&times;</span>
+            <div class="modal-body">
+                <div class="lang-zh">
+                    <h3>林俊贤</h3>
+                    <p><i class="fa-brands fa-weixin"></i> 微信：JinXL2361418252</p>
+                    <p><i class="fa-solid fa-envelope"></i> jinxl0305@163.com</p>
+                    <p><i class="fa-solid fa-location-dot"></i> 广州，广东 / 温哥华，加拿大</p>
+                </div>
+                <div class="lang-en">
+                    <h3>Junxian Lyken Lin</h3>
+                    <p><i class="fa-solid fa-envelope"></i> jinxl2361418252@gmail.com</p>
+                    <p><i class="fa-solid fa-location-dot"></i> Vancouver, BC V6B 0E6, Canada</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js?v=2"></script>
 </body>
 </html>
