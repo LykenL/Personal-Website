@@ -298,56 +298,9 @@ h1, h2, h3, h4 {
     border-color: rgba(255, 255, 255, 0.2);
 }
 
-.project-card.reverse {
-    flex-direction: row-reverse;
-}
-
-.project-image {
-    flex: 1.5; /* 增加图片的宽度比例，使其更接近横版 (16:9) */
-    min-height: 350px;
-    background: rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-right: 1px solid var(--glass-border);
-    position: relative;
-    overflow: hidden;
-}
-
-.project-card.reverse .project-image {
-    border-right: none;
-    border-left: 1px solid var(--glass-border);
-}
-
-/* 这个 class 专门为您后续放真正的 GIF 准备 */
-.project-gif {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* 保证填满框且不拉伸，裁剪掉边缘 */
-    object-position: top center; /* Web App 截图通常顶部导航栏比较重要，所以优先对齐顶部 */
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.image-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    color: var(--text-muted);
-    font-size: 1.2rem;
-    z-index: 1; /* 确保占位符在底层，如果被 GIF 覆盖则看不见 */
-}
-
-.image-placeholder i {
-    font-size: 3rem;
-    opacity: 0.5;
-}
-
 .project-info {
-    flex: 1; /* 文字部分稍微收窄 */
-    padding: 3rem; /* 稍微减小 padding 以释放空间 */
+    width: 100%;
+    padding: 3rem 4rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -473,18 +426,8 @@ footer p {
         font-size: 4rem;
     }
     
-    .project-card, .project-card.reverse {
+    .project-card {
         flex-direction: column;
-    }
-    
-    .project-image {
-        min-height: 300px;
-        border-right: none;
-        border-bottom: 1px solid var(--glass-border);
-    }
-    
-    .project-card.reverse .project-image {
-        border-left: none;
     }
     
     .project-info {
