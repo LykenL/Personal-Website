@@ -110,4 +110,80 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 7. LLM Typewriter Effect
+    const typewriters = document.querySelectorAll('.typewriter');
+
+    function wrapTextNodes(element) {
+        const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
+        const textNodes = [];
+        let currentNode;
+        while(currentNode = walker.nextNode()) {
+            if (currentNode.nodeValue.trim() !== '') {
+                textNodes.push(currentNode);
+            }
+        }
+        
+        textNodes.forEach(textNode => {
+            const text = textNode.nodeValue;
+            const fragment = document.createDocumentFragment();
+            for (let i = 0; i < text.length; i++) {
+                if (text[i] === ' ' || text[i] === '\n' || text[i] === '\t') {
+                    fragment.appendChild(document.createTextNode(text[i]));
+                } else {
+                    const charSpan = document.createElement('span');
+                    charSpan.className = 'char';
+                    charSpan.textContent = text[i];
+                    charSpan.style.opacity = '0';
+                    // Optional tiny scale or blur for a more dynamic LLM effect
+                    charSpan.style.transition = 'opacity 0.05s ease-in';
+                    fragment.appendChild(charSpan);
+                }
+            }
+            textNode.parentNode.replaceChild(fragment, textNode);
+        });
+    }
+
+    typewriters.forEach(tw => {
+        wrapTextNodes(tw);
+    });
+
+    const typewriterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const element = entry.target;
+                if (!element.classList.contains('typed')) {
+                    element.classList.add('typed');
+                    
+                    // Filter to only animate characters inside the currently visible language
+                    // This prevents double waiting time for bilingual text
+                    const isEnglish = document.body.classList.contains('lang-en');
+                    const chars = element.querySelectorAll('.char');
+                    
+                    let delay = 0;
+                    chars.forEach(char => {
+                        const parentLangZh = char.closest('.lang-zh');
+                        const parentLangEn = char.closest('.lang-en');
+                        
+                        // If it's inside a language span that is currently hidden, show it instantly to be ready for toggling
+                        if ((isEnglish && parentLangZh) || (!isEnglish && parentLangEn)) {
+                            char.style.opacity = '1';
+                        } else {
+                            // Animate visible characters
+                            setTimeout(() => {
+                                char.style.opacity = '1';
+                            }, delay);
+                            // Adjust speed based on Chinese vs English (English needs faster typing per char to match reading speed)
+                            const isChineseChar = /[\u4e00-\u9fa5]/.test(char.textContent);
+                            delay += isChineseChar ? 30 : 15;
+                        }
+                    });
+                }
+            }
+        });
+    }, { threshold: 0.1 });
+
+    typewriters.forEach(tw => {
+        typewriterObserver.observe(tw);
+    });
+
 });
