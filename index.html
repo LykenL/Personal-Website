@@ -87,6 +87,57 @@
             </h2>
             
             <div class="projects-wrapper">
+
+                <!-- Project: Autonomous Data Copilot -->
+                <div class="project-card reveal glass-panel">
+                    <div class="project-info">
+                        <div class="tags">
+                            <span class="tag">Python 3.12</span>
+                            <span class="tag">Streamlit</span>
+                            <span class="tag">Google GenAI SDK</span>
+                            <span class="tag">ChromaDB</span>
+                        </div>
+                        <h3 class="typewriter">
+                            <span class="lang-zh">自主数据副驾 (Cognitive Data IDE)</span>
+                            <span class="lang-en">Autonomous Data Copilot (Cognitive Data IDE)</span>
+                        </h3>
+                        <p class="tagline">
+                            <span class="lang-zh">扮演 AI 数据科学家的全自主 Web 数据 IDE</span>
+                            <span class="lang-en">A fully autonomous, Web-based Data IDE acting as an AI Data Scientist</span>
+                        </p>
+                        <p class="description typewriter">
+                            <span class="lang-zh">基于 gemini-3.5-flash-lite 构建，具备自主探索数据库、编写执行 Python/SQL 及渲染交互式图表的能力。采用双轨记忆系统 (SQLite + ChromaDB) 与后台异步压缩，提供高鲁棒性的 RAG 及多轮记忆交互。</span>
+                            <span class="lang-en">Built around gemini-3.5-flash-lite, this agentic engine is capable of self-directed database schema exploration, native Python/SQL execution, and interactive chart rendering. It utilizes a dual memory system (SQLite & ChromaDB) with asynchronous compression for resilient RAG and multi-turn interaction.</span>
+                        </p>
+                        <div class="highlights">
+                            <h4>
+                                <span class="lang-zh">核心亮点：</span>
+                                <span class="lang-en">Key Highlights:</span>
+                            </h4>
+                            <ul>
+                                <li class="typewriter">
+                                    <span class="lang-zh"><strong>智能体引擎：</strong>构建两步推理循环（探索架构 -> 运行代码），内置动态速率限制与防提示词注入（Recency Bias Fix）安全护栏。</span>
+                                    <span class="lang-en"><strong>Agentic Engine:</strong> Uses a two-step reasoning loop (Scan Schema -> Execute Code) with dynamic rate-limiting and prompt injection safeguards.</span>
+                                </li>
+                                <li class="typewriter">
+                                    <span class="lang-zh"><strong>人机协同架构：</strong>采用三栏式“极客风”界面（历史记录 | 数据库架构 | 工作区），支持“直接执行”与“仅预览 SQL”的安全沙箱模式。</span>
+                                    <span class="lang-en"><strong>Human-in-the-Loop UI:</strong> Features a 3-column Hacker Theme layout with a safe dual-execution flow ("Execute Query" vs "Preview SQL Only").</span>
+                                </li>
+                                <li class="typewriter">
+                                    <span class="lang-zh"><strong>量化评测与效率：</strong>在包含多重陷阱的严苛测试集上达到 100% 任务成功率，且查询的 Token 开销实现极致优化（约 1500 tokens/次）。</span>
+                                    <span class="lang-en"><strong>Evaluation & Efficiency:</strong> Achieved 100% Task Success Rate on rigorous benchmark cases with highly optimized token efficiency (~1500 tokens/query).</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="project-actions">
+                            <a href="https://nl2sql-agent-t7dmj4fm4ddaasrkfdvbah.streamlit.app" target="_blank" class="btn btn-primary">
+                                <i class="fa-solid fa-rocket"></i> 
+                                <span class="lang-zh">运行应用</span>
+                                <span class="lang-en">Launch App</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- Project 1 -->
                 <div class="project-card reveal glass-panel">
