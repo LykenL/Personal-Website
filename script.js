@@ -113,6 +113,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // 7. LLM Typewriter Effect
     const typewriters = document.querySelectorAll('.typewriter');
 
+    // ---- Typing speed tuning (milliseconds) ----
+    // Per-character delay. Chinese characters are revealed more slowly than Latin ones
+    // because a single glyph carries much more information.
+    const CHAR_DELAY_ZH = 55;
+    const CHAR_DELAY_EN = 22;
+    // Extra hold after sentence-ending / clause punctuation, so pauses read naturally.
+    const PUNCTUATION_PAUSE_ZH = 180;
+    const PUNCTUATION_PAUSE_EN = 100;
+    // Idle gap between two consecutive blocks (e.g. title -> description -> each bullet).
+    const BLOCK_GAP = 300;
+    // Small delay before the very first block of a group starts.
+    const BLOCK_START_DELAY = 150;
+
     function wrapTextNodes(element) {
         const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
         const textNodes = [];
@@ -147,43 +160,97 @@ document.addEventListener('DOMContentLoaded', () => {
         wrapTextNodes(tw);
     });
 
+    // Group typewriter blocks by the block they belong to (a project card, the hero,
+    // the hobbies header...). Blocks inside one group are typed strictly top-to-bottom:
+    // a block only starts once every block above it has finished.
+    const GROUP_SELECTOR = '.project-card, .hobbies-header, .hero-content';
+    const typewriterGroups = new Map();
+
+    typewriters.forEach(tw => {
+        const group = tw.closest(GROUP_SELECTOR) || tw.parentElement;
+        if (!typewriterGroups.has(group)) {
+            typewriterGroups.set(group, []);
+        }
+        typewriterGroups.get(group).push(tw);
+    });
+
+    const isEnglishMode = () => document.body.classList.contains('lang-en');
+
+    // Per-character delay for one char, or 0 if the char belongs to the hidden language.
+    function charDelay(char) {
+        const isEnglish = isEnglishMode();
+        const parentLangZh = char.closest('.lang-zh');
+        const parentLangEn = char.closest('.lang-en');
+
+        // Chars of the currently hidden language are revealed instantly, so that
+        // toggling the language later shows complete text.
+        if ((isEnglish && parentLangZh) || (!isEnglish && parentLangEn)) {
+            return { hidden: true, delay: 0 };
+        }
+
+        const text = char.textContent;
+        const isChineseChar = /[\u4e00-\u9fa5]/.test(text);
+        let delay = isChineseChar ? CHAR_DELAY_ZH : CHAR_DELAY_EN;
+
+        if (isChineseChar && /[，。！？；：、]/.test(text)) {
+            delay += PUNCTUATION_PAUSE_ZH;
+        } else if (!isChineseChar && /[.,!?;:]/.test(text)) {
+            delay += PUNCTUATION_PAUSE_EN;
+        }
+
+        return { hidden: false, delay };
+    }
+
+    // Total time a block needs to finish typing, based on the current language.
+    function blockDuration(element) {
+        let elapsed = 0;
+        element.querySelectorAll('.char').forEach(char => {
+            elapsed += charDelay(char).delay;
+        });
+        return elapsed;
+    }
+
+    // Reveal one block char by char. Returns nothing; duration comes from blockDuration().
+    function typeBlock(element) {
+        const chars = element.querySelectorAll('.char');
+        let delay = 0;
+
+        chars.forEach(char => {
+            const { hidden, delay: step } = charDelay(char);
+            if (hidden) {
+                char.style.opacity = '1';
+                return;
+            }
+            setTimeout(() => {
+                char.style.opacity = '1';
+            }, delay);
+            delay += step;
+        });
+    }
+
     const typewriterObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const element = entry.target;
-                if (!element.classList.contains('typed')) {
-                    element.classList.add('typed');
-                    
-                    // Filter to only animate characters inside the currently visible language
-                    // This prevents double waiting time for bilingual text
-                    const isEnglish = document.body.classList.contains('lang-en');
-                    const chars = element.querySelectorAll('.char');
-                    
-                    let delay = 0;
-                    chars.forEach(char => {
-                        const parentLangZh = char.closest('.lang-zh');
-                        const parentLangEn = char.closest('.lang-en');
-                        
-                        // If it's inside a language span that is currently hidden, show it instantly to be ready for toggling
-                        if ((isEnglish && parentLangZh) || (!isEnglish && parentLangEn)) {
-                            char.style.opacity = '1';
-                        } else {
-                            // Animate visible characters
-                            setTimeout(() => {
-                                char.style.opacity = '1';
-                            }, delay);
-                            // Adjust speed based on Chinese vs English (English needs faster typing per char to match reading speed)
-                            const isChineseChar = /[\u4e00-\u9fa5]/.test(char.textContent);
-                            delay += isChineseChar ? 30 : 15;
-                        }
-                    });
-                }
-            }
+            if (!entry.isIntersecting) return;
+
+            const group = entry.target;
+            typewriterObserver.unobserve(group);
+
+            const blocks = typewriterGroups.get(group) || [];
+            // DOM order == visual top-to-bottom order, so blocks queue up sequentially.
+            let startAt = BLOCK_START_DELAY;
+
+            blocks.forEach(block => {
+                const blockStart = startAt;
+                setTimeout(() => {
+                    typeBlock(block);
+                }, blockStart);
+                startAt = blockStart + blockDuration(block) + BLOCK_GAP;
+            });
         });
     }, { threshold: 0.1 });
 
-    typewriters.forEach(tw => {
-        typewriterObserver.observe(tw);
+    typewriterGroups.forEach((blocks, group) => {
+        typewriterObserver.observe(group);
     });
 
 });

@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# R / RStudio session history
+.Rhistory
+.RData
+.Rproj.user/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Local verification artifacts
+_verify_*.html
+.verify_tmp/
