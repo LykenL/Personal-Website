@@ -116,15 +116,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---- Typing speed tuning (milliseconds) ----
     // Per-character delay. Chinese characters are revealed more slowly than Latin ones
     // because a single glyph carries much more information.
-    const CHAR_DELAY_ZH = 55;
-    const CHAR_DELAY_EN = 22;
+    const CHAR_DELAY_ZH = 38;
+    const CHAR_DELAY_EN = 13;
     // Extra hold after sentence-ending / clause punctuation, so pauses read naturally.
-    const PUNCTUATION_PAUSE_ZH = 180;
-    const PUNCTUATION_PAUSE_EN = 100;
+    const PUNCTUATION_PAUSE_ZH = 130;
+    const PUNCTUATION_PAUSE_EN = 70;
     // Idle gap between two consecutive blocks (e.g. title -> description -> each bullet).
-    const BLOCK_GAP = 300;
+    const BLOCK_GAP = 160;
     // Small delay before the very first block of a group starts.
-    const BLOCK_START_DELAY = 150;
+    const BLOCK_START_DELAY = 100;
 
     function wrapTextNodes(element) {
         const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
