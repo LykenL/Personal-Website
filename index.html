@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body class="lang-en">
     <!-- Dynamic Background Elements -->
@@ -48,6 +48,12 @@
                     <a href="#hobbies">
                         <span class="lang-zh">个人爱好</span>
                         <span class="lang-en">Hobbies</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#guestbook">
+                        <span class="lang-zh">留言板</span>
+                        <span class="lang-en">Guestbook</span>
                     </a>
                 </li>
                 <li>
@@ -371,6 +377,79 @@
         </div>
     </section>
 
+    <!-- Guestbook Section -->
+    <section id="guestbook">
+        <div class="container">
+            <h2 class="section-title reveal">
+                <span class="lang-zh">留言板</span>
+                <span class="lang-en">Guestbook</span>
+            </h2>
+            <p class="section-subtitle reveal">
+                <span class="lang-zh">欢迎在此留下你的足迹、反馈或打个招呼 👋</span>
+                <span class="lang-en">Leave a thought, feedback, or just say hi 👋</span>
+            </p>
+
+            <div class="guestbook-layout">
+                <!-- Message Form Card -->
+                <div class="guestbook-card glass-panel reveal">
+                    <div class="card-header">
+                        <i class="fa-solid fa-feather-pointed"></i>
+                        <h3>
+                            <span class="lang-zh">发表留言</span>
+                            <span class="lang-en">Leave a Message</span>
+                        </h3>
+                    </div>
+                    <form id="guestbook-form">
+                        <div class="form-group">
+                            <label for="gb-nickname">
+                                <span class="lang-zh">你的昵称 / 姓名 *</span>
+                                <span class="lang-en">Your Nickname / Name *</span>
+                            </label>
+                            <input type="text" id="gb-nickname" required maxlength="30" placeholder="例如：Alex / 某位同行">
+                        </div>
+                        <div class="form-group">
+                            <label for="gb-content">
+                                <span class="lang-zh">留言内容 *</span>
+                                <span class="lang-en">Message *</span>
+                            </label>
+                            <textarea id="gb-content" rows="4" required maxlength="500" placeholder="写下你的想法、交流内容或建议..."></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" id="gb-submit-btn" class="btn btn-primary">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span class="lang-zh">发送留言</span>
+                                <span class="lang-en">Send Message</span>
+                            </button>
+                            <span id="gb-status" class="form-status"></span>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Messages Display Card -->
+                <div class="guestbook-card glass-panel reveal">
+                    <div class="card-header messages-header">
+                        <div>
+                            <i class="fa-solid fa-comments"></i>
+                            <h3>
+                                <span class="lang-zh">最新留言</span>
+                                <span class="lang-en">Recent Messages</span>
+                            </h3>
+                        </div>
+                        <span id="gb-count" class="message-count-badge">0 条留言</span>
+                    </div>
+
+                    <div id="guestbook-messages" class="messages-container">
+                        <div class="gb-loading">
+                            <i class="fa-solid fa-circle-notch fa-spin"></i>
+                            <span class="lang-zh">正在加载留言...</span>
+                            <span class="lang-en">Loading messages...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer id="contact" class="glass-panel">
         <div class="container footer-content">
             <h2>
@@ -408,6 +487,8 @@
         </div>
     </div>
 
-    <script src="script.js?v=5"></script>
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js?v=6"></script>
 </body>
 </html>

@@ -253,4 +253,179 @@ document.addEventListener('DOMContentLoaded', () => {
         typewriterObserver.observe(group);
     });
 
+    // ==========================================
+    // 8. Supabase Guestbook System
+    // ==========================================
+    const SUPABASE_URL = 'https://gybsybwibbeulzcpcmoq.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_pDG7jhUoENrQ8x3oAOqjxA_1_tyL39m';
+
+    const guestbookForm = document.getElementById('guestbook-form');
+    const messagesContainer = document.getElementById('guestbook-messages');
+    const messageCountBadge = document.getElementById('gb-count');
+    const submitBtn = document.getElementById('gb-submit-btn');
+    const statusText = document.getElementById('gb-status');
+
+    let sb = null;
+    if (window.supabase) {
+        sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function formatTime(isoStr) {
+        if (!isoStr) return '';
+        try {
+            const date = new Date(isoStr);
+            const now = new Date();
+            const diffSec = Math.floor((now - date) / 1000);
+            const isZh = !document.body.classList.contains('lang-en');
+
+            if (diffSec < 60) return isZh ? '刚刚' : 'Just now';
+            if (diffSec < 3600) {
+                const mins = Math.floor(diffSec / 60);
+                return isZh ? `${mins} 分钟前` : `${mins}m ago`;
+            }
+            if (diffSec < 86400) {
+                const hours = Math.floor(diffSec / 3600);
+                return isZh ? `${hours} 小时前` : `${hours}h ago`;
+            }
+            if (diffSec < 2592000) {
+                const days = Math.floor(diffSec / 86400);
+                return isZh ? `${days} 天前` : `${days}d ago`;
+            }
+            return date.toLocaleDateString();
+        } catch (e) {
+            return isoStr;
+        }
+    }
+
+    async function loadMessages() {
+        if (!sb || !messagesContainer) return;
+
+        try {
+            const { data, error } = await sb
+                .from('messages')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(50);
+
+            if (error) {
+                console.warn('Supabase fetch messages error:', error);
+                const isZh = !document.body.classList.contains('lang-en');
+                messagesContainer.innerHTML = `
+                    <div class="gb-empty">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>${isZh ? '暂未连接到数据表，请先在 Supabase 运行建表脚本' : 'Database table not found. Please run SQL script in Supabase.'}</span>
+                    </div>
+                `;
+                if (messageCountBadge) messageCountBadge.textContent = isZh ? '0 条留言' : '0 messages';
+                return;
+            }
+
+            const isZh = !document.body.classList.contains('lang-en');
+            const count = data ? data.length : 0;
+            if (messageCountBadge) {
+                messageCountBadge.textContent = isZh ? `${count} 条留言` : `${count} ${count === 1 ? 'message' : 'messages'}`;
+            }
+
+            if (!data || data.length === 0) {
+                messagesContainer.innerHTML = `
+                    <div class="gb-empty">
+                        <i class="fa-regular fa-comment-dots"></i>
+                        <span>${isZh ? '目前还没有留言，成为第一个留下足迹的人吧！' : 'No messages yet. Be the first to say hi!'}</span>
+                    </div>
+                `;
+                return;
+            }
+
+            messagesContainer.innerHTML = data.map(msg => {
+                const nickname = escapeHtml(msg.nickname || '访客');
+                const content = escapeHtml(msg.content || '');
+                const time = formatTime(msg.created_at);
+                const initial = nickname.charAt(0).toUpperCase();
+
+                return `
+                    <div class="message-item">
+                        <div class="message-meta">
+                            <div class="message-author">
+                                <div class="author-avatar">${initial}</div>
+                                <span class="author-name">${nickname}</span>
+                            </div>
+                            <span class="message-time">${time}</span>
+                        </div>
+                        <div class="message-text">${content}</div>
+                    </div>
+                `;
+            }).join('');
+
+        } catch (err) {
+            console.error('Failed to load messages:', err);
+        }
+    }
+
+    if (guestbookForm && sb) {
+        guestbookForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const nicknameInput = document.getElementById('gb-nickname');
+            const contentInput = document.getElementById('gb-content');
+            const isZh = !document.body.classList.contains('lang-en');
+
+            const nickname = nicknameInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!nickname || !content) return;
+
+            submitBtn.disabled = true;
+            const originalBtnHtml = submitBtn.innerHTML;
+            submitBtn.innerHTML = `
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                <span>${isZh ? '正在发送...' : 'Sending...'}</span>
+            `;
+            statusText.className = 'form-status';
+            statusText.textContent = '';
+
+            try {
+                const { error } = await sb
+                    .from('messages')
+                    .insert([{ nickname, content }]);
+
+                if (error) {
+                    throw error;
+                }
+
+                statusText.className = 'form-status success';
+                statusText.textContent = isZh ? '留言成功！🎉' : 'Message posted! 🎉';
+                nicknameInput.value = '';
+                contentInput.value = '';
+
+                // Reload message list
+                await loadMessages();
+
+                setTimeout(() => {
+                    statusText.textContent = '';
+                }, 4000);
+
+            } catch (err) {
+                console.error('Submit message error:', err);
+                statusText.className = 'form-status error';
+                statusText.textContent = isZh ? '发送失败，请检查数据库权限设置' : 'Failed to send. Please check database permissions.';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHtml;
+            }
+        });
+
+        // Initial fetch
+        loadMessages();
+    }
+
 });
