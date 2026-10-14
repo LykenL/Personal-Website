@@ -347,8 +347,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             messagesContainer.innerHTML = data.map(msg => {
-                const nickname = escapeHtml(msg.nickname || '访客');
-                const content = escapeHtml(msg.content || '');
+                const nickname = escapeHtml(msg.name || '访客');
+                const content = escapeHtml(msg.message || '');
                 const time = formatTime(msg.created_at);
                 const initial = nickname.charAt(0).toUpperCase();
 
@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const { error } = await sb
                     .from('messages')
-                    .insert([{ nickname, content }]);
+                    .insert([{ name: nickname, message: content }]);
 
                 if (error) {
                     throw error;
