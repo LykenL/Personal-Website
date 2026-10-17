@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 5. Scroll-driven Horizontal Photo Rail + Hobbies Scroll FX
+    // 5. Horizontal Photo Rail + Hobbies Scroll FX
     const hobbiesSection = document.getElementById('hobbies');
     const photoRail = document.getElementById('photo-rail');
 
@@ -77,8 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const cards = Array.from(track.children);
 
         // Copy the first card as the loop anchor, then a full copy of the set after it.
-        // Card #1 of the second set sits exactly one set-width (+ gap) from the start,
-        // so the loop wraps with zero visible jump.
+        // Card #1 of the second set sits exactly one set-width (+gap) from the start,
+        // so the rail wraps with zero visible jump.
         const anchor = cards[0].cloneNode(true);
         anchor.setAttribute('aria-hidden', 'true');
         track.appendChild(anchor);
@@ -89,95 +89,71 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const allCards = Array.from(track.children);
 
-        let loopWidth = 0;          // lateral distance of one full set
-        let travelStart = 0;        // scrollY where the scroll-driven motion begins
-        let travelEnd = 0;          // scrollY where it completes
-        let railX = 0;              // current horizontal offset in px
-        let autoSpeed = 0;          // idle drift so the rail never freezes
-        let lastFrame = performance.now();
-        let userPaused = false;
+        // ---- Tuning ----
+        const AUTO_SPEED = 90;       // px/s of continuous auto-scroll
+        const EASE = 0.14;           // how quickly we settle onto a target (per frame)
+        const HOVER_SLOW = 0.45;     // auto-scroll multiplier while the pointer is over the rail
 
-        const measure = () => {
-            loopWidth = allCards[cards.length].offsetLeft - allCards[0].offsetLeft;
-            const rect = hobbiesSection.getBoundingClientRect();
-            const top = rect.top + window.scrollY;
-            // Travel spans from when the section enters the viewport to when it leaves.
-            travelStart = top - window.innerHeight * 0.9;
-            travelEnd = top + hobbiesSection.offsetHeight + window.innerHeight * 0.4;
-        };
+        let loopWidth = 0;
+        let offset = 0;              // total distance travelled (px, always grows)
+        let manualOffset = 0;        // extra distance added by the arrow buttons
+        let lastFrame = performance.now();
+        let hovered = false;
+        let userPaused = false;
+        let dragging = false, dragActive = false;
+        let dragStartX = 0, dragStartY = 0, dragStartOffset = 0;
 
         const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
         const mod = (n, m) => ((n % m) + m) % m;
+        const stepSize = () => cards[0].offsetWidth + 32;
 
-        const render = (x) => {
-            // x is a positive distance; shift the track left by it, wrapping at loopWidth.
-            track.style.setProperty('--rail-x', (-mod(x, loopWidth)) + 'px');
+        const measure = () => {
+            loopWidth = allCards[cards.length].offsetLeft - allCards[0].offsetLeft;
         };
 
         const update = () => {
-            if (!photoRail || dragging) return;
             const now = performance.now();
             const dt = Math.min((now - lastFrame) / 1000, 0.05);
             lastFrame = now;
 
-            const rect = hobbiesSection.getBoundingClientRect();
-            const inView = rect.bottom > 0 && rect.top < window.innerHeight;
-
-            // Scroll progress 0..1 across the whole section.
-            const progress = clamp((window.scrollY - travelStart) / (travelEnd - travelStart), 0, 1);
-
-            // Drag is the primary motion: the rail advances as the section scrolls.
-            const target = progress * loopWidth;
-
-            if (!userPaused && !cardHovered) {
-                autoSpeed += (26 - autoSpeed) * 0.06;   // gentle idle drift (px/s)
-            } else {
-                autoSpeed += (0 - autoSpeed) * 0.15;
+            // Auto-scroll is always on unless the user explicitly paused it.
+            // Hovering only slows it down slightly; leaving the rail resumes full speed.
+            if (!userPaused && !dragging) {
+                offset += AUTO_SPEED * (hovered ? HOVER_SLOW : 1) * dt;
+            } else if (dragging) {
+                offset = dragStartOffset;
             }
-            railDrag += autoSpeed * dt;
 
-            // Ease toward the scroll target so fast wheel/trackpad input stays smooth.
-            railX += (target + railDrag - railX) * (inView ? 0.12 : 0.05);
-            render(railX);
+            // Settle onto the manual target so arrow clicks animate smoothly.
+            offset += manualOffset * EASE;
+            manualOffset -= manualOffset * EASE;
 
-            // Per-card parallax + depth: cards nearer the screen centre sit slightly higher.
+            track.style.setProperty('--rail-x', (-mod(offset, loopWidth)) + 'px');
+
+            // Parallax: cards near the screen centre float up, edges sink.
             const vw = window.innerWidth;
-            allCards.forEach((card, i) => {
+            allCards.forEach(card => {
                 const r = card.getBoundingClientRect();
-                if (r.right < -200 || r.left > vw + 200) return;
-                const centre = (r.left + r.width / 2 - vw / 2) / vw;   // -0.5 .. 0.5
-                const depth = (i % cards.length) / cards.length;
-                const offset = -centre * 26 - progress * 10 + depth * 8;
-                card.style.setProperty('--card-y', offset.toFixed(2) + 'px');
+                if (r.right < -100 || r.left > vw + 100) return;
+                const centre = (r.left + r.width / 2 - vw / 2) / vw;   // ~-0.5..0.5
+                card.style.setProperty('--card-y', (-centre * 14).toFixed(2) + 'px');
             });
 
             requestAnimationFrame(update);
         };
 
-        let railDrag = 0;
-        let cardHovered = false;
-        const pauseBtn = document.getElementById('rail-pause');
-        photoRail.addEventListener('pointerenter', () => { cardHovered = true; });
-        photoRail.addEventListener('pointerleave', () => { cardHovered = false; });
+        // Hover: only a gentle slowdown, never a stop.
+        photoRail.addEventListener('pointerenter', (e) => {
+            if (e.pointerType === 'mouse') hovered = true;
+        });
+        photoRail.addEventListener('pointerleave', () => { hovered = false; });
 
-        // Buttons nudge the rail by one card and pause the idle drift briefly.
-        let nudgeTimer;
-        const nudge = (dir) => {
-            railDrag += (cards[0].offsetWidth + 32) * dir;
-            userPaused = true;
-            clearTimeout(nudgeTimer);
-            nudgeTimer = setTimeout(() => { if (!pauseBtn.dataset.paused || pauseBtn.dataset.paused === 'false') userPaused = false; }, 1400);
-        };
-
-        // Drag / swipe scrubs the rail. Vertical drags are ignored so the page can
-        // still be scrolled with a finger starting on a photo.
-        let dragStartX = 0, dragStartY = 0, dragStartOffset = 0;
-        let dragging = false, dragActive = false;
-
+        // ---- Drag / swipe: horizontal gestures scrub the rail ----
         photoRail.addEventListener('pointerdown', (e) => {
+            if (e.target.closest('button')) return;
             dragStartX = e.clientX;
             dragStartY = e.clientY;
-            dragStartOffset = railDrag;
+            dragStartOffset = offset;
             dragging = true;
             dragActive = false;
         });
@@ -186,42 +162,37 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!dragging) return;
             const dx = e.clientX - dragStartX;
             const dy = e.clientY - dragStartY;
-            // Only take over once the gesture is clearly horizontal.
             if (!dragActive && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
                 dragActive = true;
                 photoRail.setPointerCapture(e.pointerId);
             }
             if (!dragActive) return;
-            railDrag = dragStartOffset - dx;
+            offset = dragStartOffset - dx;
         });
 
-        const endDrag = () => {
-            if (!dragging) return;
-            if (dragActive) {
-                // Land on the nearest natural scroll position so we don't fight the rail.
-                railDrag += railX - (railDrag + clamp((window.scrollY - travelStart) / (travelEnd - travelStart), 0, 1) * loopWidth);
-            }
-            dragging = false;
-            dragActive = false;
-        };
+        const endDrag = () => { dragging = false; dragActive = false; };
         photoRail.addEventListener('pointerup', endDrag);
         photoRail.addEventListener('pointercancel', endDrag);
 
+        // ---- Controls ----
         const prevBtn = document.getElementById('rail-prev');
         const nextBtn = document.getElementById('rail-next');
+        const pauseBtn = document.getElementById('rail-pause');
+
+        const nudge = (dir) => { manualOffset += stepSize() * dir; };
+
         if (prevBtn) prevBtn.addEventListener('click', () => nudge(-1));
         if (nextBtn) nextBtn.addEventListener('click', () => nudge(1));
 
         if (pauseBtn) {
             pauseBtn.dataset.paused = 'false';
             pauseBtn.addEventListener('click', () => {
-                const paused = pauseBtn.dataset.paused !== 'true';
-                pauseBtn.dataset.paused = paused ? 'true' : 'false';
-                userPaused = paused;
-                pauseBtn.innerHTML = paused
+                userPaused = pauseBtn.dataset.paused !== 'true';
+                pauseBtn.dataset.paused = userPaused ? 'true' : 'false';
+                pauseBtn.innerHTML = userPaused
                     ? '<i class="fa-solid fa-play"></i>'
                     : '<i class="fa-solid fa-pause"></i>';
-                pauseBtn.setAttribute('aria-label', paused ? 'Resume auto-scroll' : 'Pause auto-scroll');
+                pauseBtn.setAttribute('aria-label', userPaused ? 'Resume auto-scroll' : 'Pause auto-scroll');
             });
         }
 
@@ -231,8 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(measure, 200);
         });
-        // Re-measure once fonts/images settle, which can change card offsets.
-        window.addEventListener('load', () => { measure(); });
+        window.addEventListener('load', measure);
         requestAnimationFrame(update);
     }
 

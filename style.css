@@ -404,14 +404,14 @@ h1, h2, h3, h4 {
     line-height: 1.8;
 }
 
-/* Photo Rail — seamless horizontal marquee, driven by scroll progress */
+/* Photo Rail — seamless horizontal marquee (JS drives --rail-x) */
 .photo-rail {
     position: relative;
     width: 100%;
     overflow: hidden;
     padding: 2rem 0 3rem;
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
-    mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
 }
 
 .photo-track {
@@ -419,12 +419,8 @@ h1, h2, h3, h4 {
     gap: 2rem;
     width: max-content;
     will-change: transform;
-}
-
-/* JS drives the horizontal position from scroll progress; the CSS animation is
-   the autonomous fallback for no-JS and for the top of the section. */
-.photo-track {
-    transform: translateX(var(--rail-x, 0px));
+    /* px, written every frame by script.js */
+    transform: translate3d(var(--rail-x, 0px), 0, 0);
 }
 
 .photo-card {
@@ -453,10 +449,6 @@ h1, h2, h3, h4 {
     object-fit: cover;
     display: block;
     transition: transform 0.6s ease;
-}
-
-.photo-card:hover img {
-    transform: scale(1.06);
 }
 
 .photo-card figcaption {
@@ -499,6 +491,7 @@ h1, h2, h3, h4 {
 
 .photo-card:hover {
     transform: translate3d(0, calc(var(--card-y, 0px) - 10px), 0) scale(1.02);
+    z-index: 5;
 }
 
 @media (prefers-reduced-motion: reduce) {
