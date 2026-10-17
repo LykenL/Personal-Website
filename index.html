@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body class="lang-en">
     <!-- Dynamic Background Elements -->
@@ -48,12 +48,6 @@
                     <a href="#hobbies">
                         <span class="lang-zh">个人爱好</span>
                         <span class="lang-en">Hobbies</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#guestbook">
-                        <span class="lang-zh">留言板</span>
-                        <span class="lang-en">Guestbook</span>
                     </a>
                 </li>
                 <li>
@@ -325,127 +319,74 @@
                 </p>
             </div>
 
-            <div class="hobbies-sliders">
-                <!-- Slider 1: Banff & Canmore -->
-                <div class="slider-container reveal glass-panel">
-                    <button class="slider-btn prev" aria-label="Previous image"><i class="fa-solid fa-chevron-left"></i></button>
-                    <div class="slider">
-                        <div class="slide"><img src="Banff_Can/IMG_3901.jpeg" alt="Banff & Canmore 1" loading="lazy"></div>
-                        <div class="slide"><img src="Banff_Can/dji_mimo_20260420_122334_20260420122334_1776717929531_photo.JPG" alt="Banff & Canmore 2" loading="lazy"></div>
-                        <div class="slide"><img src="Banff_Can/dji_mimo_20260419_105744_20260419165745_1776622203507_photo 2.JPG" alt="Banff & Canmore 3" loading="lazy"></div>
-                        <div class="slide"><img src="Banff_Can/dji_mimo_20260420_121826_20260420121827_1776717931353_photo.jpg" alt="Banff & Canmore 4" loading="lazy"></div>
-                        <div class="slide"><img src="Banff_Can/dji_mimo_20260421_113318_20260421113318_1776800411788_photo.JPG" alt="Banff & Canmore 5" loading="lazy"></div>
-                    </div>
-                    <button class="slider-btn next" aria-label="Next image"><i class="fa-solid fa-chevron-right"></i></button>
-                    <div class="slider-location">
-                        <i class="fa-solid fa-location-dot"></i> Banff & Canmore, AB
-                    </div>
-                </div>
-
-                <!-- Slider 2: Nanaimo -->
-                <div class="slider-container reveal glass-panel">
-                    <button class="slider-btn prev" aria-label="Previous image"><i class="fa-solid fa-chevron-left"></i></button>
-                    <div class="slider">
-                        <div class="slide"><img src="Nanaimo/IMG_3089.jpeg" alt="Nanaimo 1" loading="lazy"></div>
-                        <div class="slide"><img src="Nanaimo/IMG_3144.jpeg" alt="Nanaimo 2" loading="lazy"></div>
-                        <div class="slide"><img src="Nanaimo/IMG_3069.jpeg" alt="Nanaimo 3" loading="lazy"></div>
-                        <div class="slide"><img src="Nanaimo/IMG_3153.jpeg" alt="Nanaimo 4" loading="lazy"></div>
-                        <div class="slide"><img src="Nanaimo/IMG_3217.jpeg" alt="Nanaimo 5" loading="lazy"></div>
-                    </div>
-                    <button class="slider-btn next" aria-label="Next image"><i class="fa-solid fa-chevron-right"></i></button>
-                    <div class="slider-location">
-                        <i class="fa-solid fa-location-dot"></i> Nanaimo, BC
-                    </div>
-                </div>
-
-                <!-- Slider 3: Vancouver -->
-                <div class="slider-container reveal glass-panel">
-                    <button class="slider-btn prev" aria-label="Previous image"><i class="fa-solid fa-chevron-left"></i></button>
-                    <div class="slider">
-                        <div class="slide"><img src="GVA/67968eaa863329171858207a381069b5.jpg" alt="Greater Vancouver Area 1" loading="lazy"></div>
-                        <div class="slide"><img src="GVA/IMG_1592.jpeg" alt="Greater Vancouver Area 2" loading="lazy"></div>
-                        <div class="slide"><img src="GVA/IMG_8832.jpeg" alt="Greater Vancouver Area 3" loading="lazy"></div>
-                        <div class="slide"><img src="GVA/fb9c1c0086afa4f5bfb0fb1a3a8c7775.JPG" alt="Greater Vancouver Area 4" loading="lazy"></div>
-                        <div class="slide"><img src="GVA/img_v3_0211f_73a99bb1-e064-4dcb-a309-507b262cde9g.JPG" alt="Greater Vancouver Area 5" loading="lazy"></div>
-                    </div>
-                    <button class="slider-btn next" aria-label="Next image"><i class="fa-solid fa-chevron-right"></i></button>
-                    <div class="slider-location">
-                        <i class="fa-solid fa-location-dot"></i> Greater Vancouver Area
-                    </div>
+            <div class="photo-rail reveal" id="photo-rail">
+                <div class="photo-track">
+                        <figure class="photo-card">
+                            <img src="Banff_Can/IMG_3901.jpeg" alt="Banff & Canmore 1" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Banff & Canmore, AB</figcaption>
+                        </figure>
+                        <figure class="photo-card">
+                            <img src="Banff_Can/dji_mimo_20260420_122334_20260420122334_1776717929531_photo.JPG" alt="Banff & Canmore 2" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Banff & Canmore, AB</figcaption>
+                        </figure>
+                        <figure class="photo-card">
+                            <img src="Banff_Can/dji_mimo_20260419_105744_20260419165745_1776622203507_photo 2.JPG" alt="Banff & Canmore 3" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Banff & Canmore, AB</figcaption>
+                        </figure>
+                        <figure class="photo-card">
+                            <img src="Banff_Can/dji_mimo_20260420_121826_20260420121827_1776717931353_photo.jpg" alt="Banff & Canmore 4" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Banff & Canmore, AB</figcaption>
+                        </figure>
+                        <figure class="photo-card">
+                            <img src="Banff_Can/dji_mimo_20260421_113318_20260421113318_1776800411788_photo.JPG" alt="Banff & Canmore 5" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Banff & Canmore, AB</figcaption>
+                        </figure>
+                        <figure class="photo-card">
+                            <img src="Nanaimo/IMG_3089.jpeg" alt="Nanaimo 1" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Nanaimo, BC</figcaption>
+                        </figure>
+                        <figure class="photo-card">
+                            <img src="Nanaimo/IMG_3144.jpeg" alt="Nanaimo 2" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Nanaimo, BC</figcaption>
+                        </figure>
+                        <figure class="photo-card">
+                            <img src="Nanaimo/IMG_3069.jpeg" alt="Nanaimo 3" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Nanaimo, BC</figcaption>
+                        </figure>
+                        <figure class="photo-card">
+                            <img src="Nanaimo/IMG_3153.jpeg" alt="Nanaimo 4" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Nanaimo, BC</figcaption>
+                        </figure>
+                        <figure class="photo-card">
+                            <img src="Nanaimo/IMG_3217.jpeg" alt="Nanaimo 5" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Nanaimo, BC</figcaption>
+                        </figure>
+                        <figure class="photo-card">
+                            <img src="GVA/67968eaa863329171858207a381069b5.jpg" alt="Greater Vancouver Area 1" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Greater Vancouver Area</figcaption>
+                        </figure>
+                        <figure class="photo-card">
+                            <img src="GVA/IMG_1592.jpeg" alt="Greater Vancouver Area 2" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Greater Vancouver Area</figcaption>
+                        </figure>
+                        <figure class="photo-card">
+                            <img src="GVA/IMG_8832.jpeg" alt="Greater Vancouver Area 3" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Greater Vancouver Area</figcaption>
+                        </figure>
+                        <figure class="photo-card">
+                            <img src="GVA/fb9c1c0086afa4f5bfb0fb1a3a8c7775.JPG" alt="Greater Vancouver Area 4" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Greater Vancouver Area</figcaption>
+                        </figure>
+                        <figure class="photo-card">
+                            <img src="GVA/img_v3_0211f_73a99bb1-e064-4dcb-a309-507b262cde9g.JPG" alt="Greater Vancouver Area 5" loading="lazy">
+                            <figcaption><i class="fa-solid fa-location-dot"></i> Greater Vancouver Area</figcaption>
+                        </figure>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Guestbook Section -->
-    <section id="guestbook">
-        <div class="container">
-            <h2 class="section-title reveal">
-                <span class="lang-zh">留言板</span>
-                <span class="lang-en">Guestbook</span>
-            </h2>
-            <p class="section-subtitle reveal">
-                <span class="lang-zh">欢迎在此留下你的足迹、反馈或打个招呼 👋</span>
-                <span class="lang-en">Leave a thought, feedback, or just say hi 👋</span>
-            </p>
-
-            <div class="guestbook-layout">
-                <!-- Message Form Card -->
-                <div class="guestbook-card glass-panel reveal">
-                    <div class="card-header">
-                        <i class="fa-solid fa-feather-pointed"></i>
-                        <h3>
-                            <span class="lang-zh">发表留言</span>
-                            <span class="lang-en">Leave a Message</span>
-                        </h3>
-                    </div>
-                    <form id="guestbook-form">
-                        <div class="form-group">
-                            <label for="gb-nickname">
-                                <span class="lang-zh">你的昵称 / 姓名 *</span>
-                                <span class="lang-en">Your Nickname / Name *</span>
-                            </label>
-                            <input type="text" id="gb-nickname" required maxlength="30" placeholder="Name / Handle">
-                        </div>
-                        <div class="form-group">
-                            <label for="gb-content">
-                                <span class="lang-zh">留言内容 *</span>
-                                <span class="lang-en">Message *</span>
-                            </label>
-                            <textarea id="gb-content" rows="4" required maxlength="500" placeholder="Write your message here..."></textarea>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" id="gb-submit-btn" class="btn btn-primary">
-                                <i class="fa-solid fa-paper-plane"></i>
-                                <span class="lang-zh">发送留言</span>
-                                <span class="lang-en">Send Message</span>
-                            </button>
-                            <span id="gb-status" class="form-status"></span>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Messages Display Card -->
-                <div class="guestbook-card glass-panel reveal">
-                    <div class="card-header messages-header">
-                        <div>
-                            <i class="fa-solid fa-comments"></i>
-                            <h3>
-                                <span class="lang-zh">最新留言</span>
-                                <span class="lang-en">Recent Messages</span>
-                            </h3>
-                        </div>
-                        <span id="gb-count" class="message-count-badge">0 条留言</span>
-                    </div>
-
-                    <div id="guestbook-messages" class="messages-container">
-                        <div class="gb-loading">
-                            <i class="fa-solid fa-circle-notch fa-spin"></i>
-                            <span class="lang-zh">正在加载留言...</span>
-                            <span class="lang-en">Loading messages...</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="rail-controls">
+                <button class="rail-btn" id="rail-prev" aria-label="Scroll photos left"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="rail-btn" id="rail-pause" aria-label="Pause auto-scroll"><i class="fa-solid fa-pause"></i></button>
+                <button class="rail-btn" id="rail-next" aria-label="Scroll photos right"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
         </div>
     </section>
@@ -487,8 +428,6 @@
         </div>
     </div>
 
-    <!-- Supabase JS Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="script.js?v=7"></script>
+    <script src="script.js?v=12"></script>
 </body>
 </html>
