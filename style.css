@@ -371,7 +371,17 @@ h1, h2, h3, h4 {
 
 /* --- Hobbies Section & Slider --- */
 #hobbies {
-    padding: 8rem 0;
+    padding: 10rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Full-bleed wrapper: the rail escapes the 1200px container so photos are
+   presented at a genuinely large size while the header keeps its reading width. */
+.hobbies-wide {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-top: 5rem;
 }
 
 .hobbies-header {
@@ -394,42 +404,36 @@ h1, h2, h3, h4 {
     line-height: 1.8;
 }
 
-/* Photo Rail — seamless horizontal marquee */
+/* Photo Rail — seamless horizontal marquee, driven by scroll progress */
 .photo-rail {
     position: relative;
     width: 100%;
     overflow: hidden;
-    border-radius: 24px;
-    padding: 1rem 0;
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
-    mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+    padding: 2rem 0 3rem;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
 }
 
 .photo-track {
     display: flex;
-    gap: 1.5rem;
+    gap: 2rem;
     width: max-content;
     will-change: transform;
-    animation: rail-scroll 120s linear infinite;
 }
 
-.photo-rail:hover .photo-track,
-.photo-rail.is-paused .photo-track {
-    animation-play-state: paused;
-}
-
-@keyframes rail-scroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(var(--loop-offset, -50%)); }
+/* JS drives the horizontal position from scroll progress; the CSS animation is
+   the autonomous fallback for no-JS and for the top of the section. */
+.photo-track {
+    transform: translateX(var(--rail-x, 0px));
 }
 
 .photo-card {
     position: relative;
     flex: 0 0 auto;
-    width: 440px;
-    height: 300px;
+    width: 880px;
+    height: 600px;
     margin: 0;
-    border-radius: 18px;
+    border-radius: 26px;
     overflow: hidden;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
@@ -438,9 +442,9 @@ h1, h2, h3, h4 {
 }
 
 .photo-card:hover {
-    transform: translateY(-6px) scale(1.02);
+    transform: translateY(-10px) scale(1.02);
     border-color: rgba(0, 240, 255, 0.4);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.5);
 }
 
 .photo-card img {
@@ -460,16 +464,55 @@ h1, h2, h3, h4 {
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 2.5rem 1.1rem 0.9rem;
-    font-size: 0.9rem;
+    padding: 4rem 2rem 1.6rem;
+    font-size: 1.15rem;
     letter-spacing: 0.5px;
     color: #fff;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.78), transparent);
 }
 
 .photo-card figcaption i {
     color: var(--accent-1);
-    margin-right: 0.4rem;
+    margin-right: 0.5rem;
+}
+
+/* Scroll-linked reveal inside the hobbies section */
+.hobbies-header > * {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#hobbies.in-view .hobbies-header > * {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#hobbies.in-view .hobbies-header > *:nth-child(1) { transition-delay: 0.05s; }
+#hobbies.in-view .hobbies-header > *:nth-child(2) { transition-delay: 0.18s; }
+#hobbies.in-view .hobbies-header > *:nth-child(3) { transition-delay: 0.3s; }
+
+/* Parallax drift on each photo, set per-card from scroll progress */
+.photo-card {
+    transform: translate3d(0, var(--card-y, 0px), 0);
+}
+
+.photo-card:hover {
+    transform: translate3d(0, calc(var(--card-y, 0px) - 10px), 0) scale(1.02);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hobbies-header > *,
+    .photo-card {
+        transition: none;
+    }
+    .hobbies-header > * {
+        opacity: 1;
+        transform: none;
+    }
+    .photo-card {
+        transform: none;
+    }
 }
 
 /* Rail controls */
@@ -661,13 +704,22 @@ footer p {
     }
 
     .photo-card {
-        width: 280px;
-        height: 200px;
+        width: 100vw;
+        height: calc(100vw * 0.68);
+        border-radius: 18px;
+    }
+
+    .photo-card figcaption {
+        font-size: 0.95rem;
+        padding: 2.5rem 1.1rem 1rem;
     }
 
     .photo-track {
         gap: 1rem;
-        animation-duration: 80s;
+    }
+
+    .hobbies-wide {
+        margin-top: 3rem;
     }
     
     .nav-links {

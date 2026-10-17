@@ -68,17 +68,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 5. Horizontal Photo Rail
+    // 5. Scroll-driven Horizontal Photo Rail + Hobbies Scroll FX
+    const hobbiesSection = document.getElementById('hobbies');
     const photoRail = document.getElementById('photo-rail');
 
     if (photoRail) {
         const track = photoRail.querySelector('.photo-track');
         const cards = Array.from(track.children);
 
-        // Append an exact copy of the first card as the loop anchor, then a full copy
-        // of the set after it (the rail is much longer than the viewport, so this
-        // always fills the screen). Card #1 of that second set sits exactly
-        // one-set-plus-one-gap away, so the loop wraps with zero visible jump.
+        // Copy the first card as the loop anchor, then a full copy of the set after it.
+        // Card #1 of the second set sits exactly one set-width (+ gap) from the start,
+        // so the loop wraps with zero visible jump.
         const anchor = cards[0].cloneNode(true);
         anchor.setAttribute('aria-hidden', 'true');
         track.appendChild(anchor);
@@ -89,88 +89,165 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const allCards = Array.from(track.children);
 
-        // Base distance covered per second, independent of photo count / screen size.
-        const SPEED_PX_S = 45;
-        const syncDuration = () => {
-            // Measure the real layout distance from the first original card to the
-            // anchor clone (index cards.length). That is the exact seam the loop must
-            // travel, whatever the card widths and gap happen to be.
-            const loop = allCards[cards.length].offsetLeft - allCards[0].offsetLeft;
-            track.style.setProperty('--loop-offset', -loop + 'px');
-            track.style.animationDuration = (loop / SPEED_PX_S) + 's';
-        };
-        syncDuration();
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(syncDuration, 200);
-        });
+        let loopWidth = 0;          // lateral distance of one full set
+        let travelStart = 0;        // scrollY where the scroll-driven motion begins
+        let travelEnd = 0;          // scrollY where it completes
+        let railX = 0;              // current horizontal offset in px
+        let autoSpeed = 0;          // idle drift so the rail never freezes
+        let lastFrame = performance.now();
+        let userPaused = false;
 
-        // Pointer drag / swipe scrubs the rail manually.
+        const measure = () => {
+            loopWidth = allCards[cards.length].offsetLeft - allCards[0].offsetLeft;
+            const rect = hobbiesSection.getBoundingClientRect();
+            const top = rect.top + window.scrollY;
+            // Travel spans from when the section enters the viewport to when it leaves.
+            travelStart = top - window.innerHeight * 0.9;
+            travelEnd = top + hobbiesSection.offsetHeight + window.innerHeight * 0.4;
+        };
+
+        const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+        const mod = (n, m) => ((n % m) + m) % m;
+
+        const render = (x) => {
+            // x is a positive distance; shift the track left by it, wrapping at loopWidth.
+            track.style.setProperty('--rail-x', (-mod(x, loopWidth)) + 'px');
+        };
+
+        const update = () => {
+            if (!photoRail || dragging) return;
+            const now = performance.now();
+            const dt = Math.min((now - lastFrame) / 1000, 0.05);
+            lastFrame = now;
+
+            const rect = hobbiesSection.getBoundingClientRect();
+            const inView = rect.bottom > 0 && rect.top < window.innerHeight;
+
+            // Scroll progress 0..1 across the whole section.
+            const progress = clamp((window.scrollY - travelStart) / (travelEnd - travelStart), 0, 1);
+
+            // Drag is the primary motion: the rail advances as the section scrolls.
+            const target = progress * loopWidth;
+
+            if (!userPaused && !cardHovered) {
+                autoSpeed += (26 - autoSpeed) * 0.06;   // gentle idle drift (px/s)
+            } else {
+                autoSpeed += (0 - autoSpeed) * 0.15;
+            }
+            railDrag += autoSpeed * dt;
+
+            // Ease toward the scroll target so fast wheel/trackpad input stays smooth.
+            railX += (target + railDrag - railX) * (inView ? 0.12 : 0.05);
+            render(railX);
+
+            // Per-card parallax + depth: cards nearer the screen centre sit slightly higher.
+            const vw = window.innerWidth;
+            allCards.forEach((card, i) => {
+                const r = card.getBoundingClientRect();
+                if (r.right < -200 || r.left > vw + 200) return;
+                const centre = (r.left + r.width / 2 - vw / 2) / vw;   // -0.5 .. 0.5
+                const depth = (i % cards.length) / cards.length;
+                const offset = -centre * 26 - progress * 10 + depth * 8;
+                card.style.setProperty('--card-y', offset.toFixed(2) + 'px');
+            });
+
+            requestAnimationFrame(update);
+        };
+
+        let railDrag = 0;
+        let cardHovered = false;
         const pauseBtn = document.getElementById('rail-pause');
-        let dragging = false, startX = 0, startPaused = false;
+        photoRail.addEventListener('pointerenter', () => { cardHovered = true; });
+        photoRail.addEventListener('pointerleave', () => { cardHovered = false; });
+
+        // Buttons nudge the rail by one card and pause the idle drift briefly.
+        let nudgeTimer;
+        const nudge = (dir) => {
+            railDrag += (cards[0].offsetWidth + 32) * dir;
+            userPaused = true;
+            clearTimeout(nudgeTimer);
+            nudgeTimer = setTimeout(() => { if (!pauseBtn.dataset.paused || pauseBtn.dataset.paused === 'false') userPaused = false; }, 1400);
+        };
+
+        // Drag / swipe scrubs the rail. Vertical drags are ignored so the page can
+        // still be scrolled with a finger starting on a photo.
+        let dragStartX = 0, dragStartY = 0, dragStartOffset = 0;
+        let dragging = false, dragActive = false;
 
         photoRail.addEventListener('pointerdown', (e) => {
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            dragStartOffset = railDrag;
             dragging = true;
-            startX = e.clientX;
-            startPaused = photoRail.classList.contains('is-paused');
-            photoRail.classList.add('is-paused');
-            photoRail.setPointerCapture(e.pointerId);
+            dragActive = false;
         });
 
-        const endDrag = () => { dragging = false; };
-
-        photoRail.addEventListener('pointerup', (e) => {
+        photoRail.addEventListener('pointermove', (e) => {
             if (!dragging) return;
-            const delta = e.clientX - startX;
-            // Scrub the marquee offset by dragging: approximate with scroll position.
-            endDrag();
-            photoRail.style.transform = '';
-            if (!startPaused) {
-                photoRail.classList.remove('is-paused');
+            const dx = e.clientX - dragStartX;
+            const dy = e.clientY - dragStartY;
+            // Only take over once the gesture is clearly horizontal.
+            if (!dragActive && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+                dragActive = true;
+                photoRail.setPointerCapture(e.pointerId);
             }
-            if (Math.abs(delta) > 40) {
-                nudgeRail(delta > 0 ? -1 : 1);
-            }
+            if (!dragActive) return;
+            railDrag = dragStartOffset - dx;
         });
 
+        const endDrag = () => {
+            if (!dragging) return;
+            if (dragActive) {
+                // Land on the nearest natural scroll position so we don't fight the rail.
+                railDrag += railX - (railDrag + clamp((window.scrollY - travelStart) / (travelEnd - travelStart), 0, 1) * loopWidth);
+            }
+            dragging = false;
+            dragActive = false;
+        };
+        photoRail.addEventListener('pointerup', endDrag);
         photoRail.addEventListener('pointercancel', endDrag);
-
-        // Buttons: nudge one card width, pausing briefly so the move is visible.
-        let nudgeTimeout;
-        function nudgeRail(direction) {
-            const step = (cards[0].offsetWidth + 24) * direction;
-            photoRail.classList.add('is-paused');
-            // Animate a manual offset on top of the paused animation.
-            const current = getComputedStyle(track).transform;
-            const matrix = current && current !== 'none' ? new DOMMatrixReadOnly(current) : new DOMMatrixReadOnly();
-            const base = matrix.m41;
-            track.style.transform = `translateX(${base + step}px)`;
-            clearTimeout(nudgeTimeout);
-            nudgeTimeout = setTimeout(() => {
-                // Hand control back to the CSS animation, which wraps around.
-                track.style.transform = '';
-                if (pauseBtn && pauseBtn.dataset.paused !== 'true') {
-                    photoRail.classList.remove('is-paused');
-                }
-            }, 700);
-        }
 
         const prevBtn = document.getElementById('rail-prev');
         const nextBtn = document.getElementById('rail-next');
-        if (prevBtn) prevBtn.addEventListener('click', () => nudgeRail(-1));
-        if (nextBtn) nextBtn.addEventListener('click', () => nudgeRail(1));
+        if (prevBtn) prevBtn.addEventListener('click', () => nudge(-1));
+        if (nextBtn) nextBtn.addEventListener('click', () => nudge(1));
 
         if (pauseBtn) {
+            pauseBtn.dataset.paused = 'false';
             pauseBtn.addEventListener('click', () => {
-                const paused = photoRail.classList.toggle('is-paused');
+                const paused = pauseBtn.dataset.paused !== 'true';
                 pauseBtn.dataset.paused = paused ? 'true' : 'false';
+                userPaused = paused;
                 pauseBtn.innerHTML = paused
                     ? '<i class="fa-solid fa-play"></i>'
                     : '<i class="fa-solid fa-pause"></i>';
                 pauseBtn.setAttribute('aria-label', paused ? 'Resume auto-scroll' : 'Pause auto-scroll');
             });
         }
+
+        measure();
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(measure, 200);
+        });
+        // Re-measure once fonts/images settle, which can change card offsets.
+        window.addEventListener('load', () => { measure(); });
+        requestAnimationFrame(update);
+    }
+
+    // Section-level scroll trigger: staggered header reveal.
+    if (hobbiesSection && 'IntersectionObserver' in window) {
+        const hobbiesObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                }
+            });
+        }, { threshold: 0.15 });
+        hobbiesObserver.observe(hobbiesSection);
+    } else if (hobbiesSection) {
+        hobbiesSection.classList.add('in-view');
     }
 
     // 6. Contact Modal Logic
