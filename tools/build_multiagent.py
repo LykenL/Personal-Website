@@ -39,6 +39,7 @@ XFADE = 0.15                    # crossfade length between segments, seconds
 ZOOM_IN = 0.55                  # seconds to push from full view into the focus box
 ZOOM_OUT = 0.55                 # seconds to pull back out
 CRF = 26
+BOTTOM_BAND = 0.26             # fraction of the page height promoted to centre in full view
 
 
 def page_frame():
@@ -87,8 +88,8 @@ SEGMENTS = [
     # bottom-right: chart area (skip top 1/5 and left 1/5 of the page)
     {"s": 78.0, "e": 86.0, "focus": focus_box(0.62, 0.64, 0.66),
      "speed": 1.1, "label": "chart"},
-    # bottom-right: code output
-    {"s": 87.0, "e": 92.0, "focus": focus_box(0.62, 0.64, 0.66),
+    # source code: same band as the chart but moved left by ~1/5 of the page width
+    {"s": 87.0, "e": 92.0, "focus": focus_box(0.42, 0.64, 0.66),
      "speed": 1.1, "label": "code"},
 ]
 
@@ -100,14 +101,20 @@ def crop_expressions(seg):
     dur = (seg["e"] - seg["s"]) / seg["speed"]
 
     if seg["focus"] is None:
-        # Full page view. The page area is slightly taller than 16:9, so crop the
-        # largest 16:9 window (by height) instead of padding: no black bars, and
-        # it is the same window every focus zoom interpolates toward.
-        full_w, full_h = pw, pw * 9 / 16
-        cx = px + pw / 2 - full_w / 2
-        cy = py + ph / 2 - full_h / 2
-        return (f"crop={int(full_w)}:{int(full_h)}:{int(cx)}:{int(cy)},"
-                f"scale={OUT_W}:{OUT_H},setsar=1")
+        # Full page view with the prompt composer promoted: the bottom fifth of the
+        # page is moved up so it sits in the middle of the frame, and the space it
+        # vacates is filled with black. This keeps the text being typed legible
+        # instead of shrunk to a strip at the bottom.
+        band_top = py + ph * (1 - BOTTOM_BAND)
+        band_h = ph * BOTTOM_BAND
+        # Take the widest slice of the bottom band and scale it to fill the frame
+        # height, so the composer reads large. Anything wider than 16:9 is cropped
+        # from the band; the leftover is black above/below when it is narrower.
+        band_w = min(pw, band_h * 16 / 9)
+        band_x = px + (pw - band_w) / 2
+        return (f"crop={int(band_w)}:{int(band_h)}:{int(band_x)}:{int(band_top)},"
+                f"scale={OUT_W}:{OUT_H}:force_original_aspect_ratio=increase,"
+                f"crop={OUT_W}:{OUT_H},setsar=1")
 
     fx, fy, fw, fh = seg["focus"]
     # focus box in source pixels
