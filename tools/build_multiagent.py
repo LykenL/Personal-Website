@@ -39,7 +39,12 @@ XFADE = 0.15                    # crossfade length between segments, seconds
 ZOOM_IN = 0.55                  # seconds to push from full view into the focus box
 ZOOM_OUT = 0.55                 # seconds to pull back out
 CRF = 26
-FRAME_RIGHT = 0.965            # right edge of page content, used for the code window
+FRAME_RIGHT = 0.965
+# Code segment framing. The code block itself spans 0.044..0.801 of the page
+# (measured on frames 88-91s, where the layout is stable). A window of that width
+# upscales to 1920 at 0.88x -- close to native size, with the whole block visible.
+CODE_LEFT = 0.040
+CODE_RIGHT = 0.805            # right edge of page content, used for the code window
 BOTTOM_BAND_PAD = 0.06     # gap below the composer before the crop bottom             # fraction of the page height promoted to centre in full view
 
 
@@ -130,9 +135,11 @@ SEGMENTS = [
      "speed": 1.1, "label": "chart"},
     # source code: same band as the chart but moved left by ~1/5 of the page width
     # source code: whole script pane visible, its left border flush with the frame
-    # code text starts at 0.551 of the page and ends at 0.958 (measured):
-    # pin the text's left edge to the frame's left edge
-    {"s": 87.0, "e": 92.0, "focus": focus_box_left(0.551, 0.64, 0.958),
+    # source code: framed at natural scale. A window of 70% of the page width
+    # (~2019 source px) upscales to 1920 at 0.95x -- i.e. the code reads at
+    # roughly the size it does on the original screen. Wider shrinks the text,
+    # narrower blows it up.
+    {"s": 87.0, "e": 92.0, "focus": focus_box_left(CODE_LEFT, 0.60, CODE_RIGHT),
      "speed": 1.1, "label": "code", "align_left": True},
 ]
 
