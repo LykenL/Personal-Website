@@ -1,7 +1,7 @@
 {
   "output": "/Users/lykenl/Documents/Personal_website/portfolio/videos/multi-agent/clip.mp4",
   "poster": "/Users/lykenl/Documents/Personal_website/portfolio/videos/multi-agent/poster.jpg",
-  "bytes": 5334300,
+  "bytes": 5310477,
   "poster_bytes": 146419,
   "segments": [
     {
@@ -21,6 +21,10 @@
       "seconds": 4.55
     }
   ],
-  "total_seconds": 28.17,
+  "total_seconds": 28.47,
+  "ending_fade": {
+    "fade": 0.8,
+    "black_tail": 0.3
+  },
   "crossfade": 0.15
 }

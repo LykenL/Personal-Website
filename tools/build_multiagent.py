@@ -36,6 +36,8 @@ CHROME_BOTTOM = 0.1505          # fraction of source height occupied by browser 
 OUT_W, OUT_H = 1920, 1080
 FPS = 30
 XFADE = 0.15                    # crossfade length between segments, seconds
+ENDING_FADE = 0.8               # fade-to-black duration at the very end
+ENDING_TAIL = 0.3               # black hold after the fade finishes
 ZOOM_IN = 0.55                  # seconds to push from full view into the focus box
 ZOOM_OUT = 0.55                 # seconds to pull back out
 CRF = 26
@@ -259,10 +261,23 @@ def build(dry=False):
     acc = parts[0][1]
     for i in range(1, len(parts)):
         offset = acc - XFADE
-        label = f"[x{i}]" if i < len(parts) - 1 else "[vout]"
+        label = f"[x{i}]" if i < len(parts) - 1 else "[linked]"
         filters.append(f"{prev}[{i}:v]xfade=transition=fade:duration={XFADE}:offset={offset:.3f}{label}")
         prev = label
         acc = offset + parts[i][1]
+
+    # Ending: fade to black over the last ENDING_FADE seconds, then hold black for
+    # ENDING_TAIL so the clip settles instead of snapping off. A plain fade=out on
+    # the joined stream handles both, since it pads the tail with black.
+    # fade=out only darkens the stream that exists; it does not extend it. So run
+    # the fade over the last ENDING_FADE seconds and then hold the final (black)
+    # frame for ENDING_TAIL via tpad, which does add duration.
+    end_start = acc - ENDING_FADE
+    filters.append(
+        f"[linked]fade=t=out:st={end_start:.3f}:d={ENDING_FADE}:color=black,"
+        f"tpad=stop_mode=clone:stop_duration={ENDING_TAIL},"
+        f"format=yuv420p[vout]")
+    total = acc + ENDING_TAIL
 
     final = os.path.join(OUT, "clip.mp4")
     run([FFMPEG, "-y", *inputs, "-filter_complex", ";".join(filters),
@@ -282,7 +297,8 @@ def build(dry=False):
         "bytes": os.path.getsize(final),
         "poster_bytes": os.path.getsize(poster),
         "segments": [{"label": l, "seconds": round(d, 2)} for _, d, l in parts],
-        "total_seconds": round(acc, 2),
+        "total_seconds": round(total, 2),
+        "ending_fade": {"fade": ENDING_FADE, "black_tail": ENDING_TAIL},
         "crossfade": XFADE,
     }
     with open(os.path.join(OUT, "manifest.json"), "w") as f:
