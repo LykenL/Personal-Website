@@ -1,0 +1,26 @@
+{
+  "output": "/Users/lykenl/Documents/Personal_website/portfolio/videos/multi-agent/clip.mp4",
+  "poster": "/Users/lykenl/Documents/Personal_website/portfolio/videos/multi-agent/poster.jpg",
+  "bytes": 5789825,
+  "poster_bytes": 158683,
+  "segments": [
+    {
+      "label": "prompt",
+      "seconds": 8.0
+    },
+    {
+      "label": "llm-output",
+      "seconds": 8.8
+    },
+    {
+      "label": "chart",
+      "seconds": 7.27
+    },
+    {
+      "label": "code",
+      "seconds": 4.55
+    }
+  ],
+  "total_seconds": 28.17,
+  "crossfade": 0.15
+}
