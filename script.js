@@ -220,6 +220,79 @@ document.addEventListener('DOMContentLoaded', () => {
         hobbiesSection.classList.add('in-view');
     }
 
+    // 5b. Project demo video: reveal + autoplay (muted) only when the clip exists
+    document.querySelectorAll('.media-frame').forEach(frame => {
+        const video = frame.querySelector('video');
+        const toggle = frame.querySelector('.media-toggle');
+        if (!video) return;
+
+        const src = video.dataset.src || (video.querySelector('source') || {}).src;
+        if (!src) return;
+
+        // Probe the clip before wiring it up: while no video has been generated the
+        // placeholder must stay visible instead of showing a broken black box.
+        let started = false;
+        const start = () => {
+            if (started) return;
+            started = true;
+            video.src = src;
+            video.load();
+            frame.classList.add('has-video');
+
+            if ('IntersectionObserver' in window) {
+                const io = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        if (!entry.isIntersecting) {
+                            video.pause();
+                            return;
+                        }
+                        const played = video.play();
+                        if (played && played.catch) played.catch(() => {});
+                    });
+                }, { threshold: 0.4 });
+                io.observe(frame);
+            } else {
+                const played = video.play();
+                if (played && played.catch) played.catch(() => {});
+            }
+        };
+
+        // fetch() is unavailable on file:// pages, so fall back to loading the
+        // source directly; the error handler below keeps the placeholder if missing.
+        if (location.protocol === 'file:') {
+            start();
+        } else {
+            fetch(src, { method: 'HEAD' })
+                .then(res => { if (res.ok) start(); })
+                .catch(() => {});
+        }
+        video.addEventListener('error', () => {
+            frame.classList.remove('has-video');
+            started = false;
+        });
+
+        if (toggle) {
+            const sync = () => {
+                const paused = video.paused;
+                toggle.innerHTML = paused
+                    ? '<i class="fa-solid fa-play"></i>'
+                    : '<i class="fa-solid fa-pause"></i>';
+                toggle.setAttribute('aria-label', paused ? 'Play demo video' : 'Pause demo video');
+            };
+            toggle.addEventListener('click', () => {
+                if (video.paused) {
+                    const played = video.play();
+                    if (played && played.catch) played.catch(() => {});
+                } else {
+                    video.pause();
+                }
+            });
+            video.addEventListener('play', sync);
+            video.addEventListener('pause', sync);
+            sync();
+        }
+    });
+
     // 6. Contact Modal Logic
     const contactBtn = document.getElementById('contact-btn');
     const contactModal = document.getElementById('contact-modal');

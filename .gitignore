@@ -13,3 +13,13 @@ __pycache__/
 # Local verification artifacts
 _verify_*.html
 .verify_tmp/
+
+# Source footage (large) — never commit raw recordings
+raw/
+*.mov
+
+# Generated clips come from tools/clip_video.py. Ignored by default;
+# force-add with `git add -f` once a clip is small enough to ship.
+videos/**/*.mp4
+videos/**/*.jpg
+videos/**/manifest.json

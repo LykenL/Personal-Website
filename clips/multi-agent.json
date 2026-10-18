@@ -1,0 +1,12 @@
+{
+  "source": "raw/multi-agent.mov",
+  "out": "videos/multi-agent",
+  "segments": [
+    {
+      "start": "00:00",
+      "end": "00:20"
+    }
+  ],
+  "poster_at": "00:02",
+  "crf": 30
+}

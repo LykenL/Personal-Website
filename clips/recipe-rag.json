@@ -1,0 +1,12 @@
+{
+  "source": "raw/recipe-rag.mov",
+  "out": "videos/recipe-rag",
+  "segments": [
+    {
+      "start": "00:00",
+      "end": "00:20"
+    }
+  ],
+  "poster_at": "00:02",
+  "crf": 30
+}
