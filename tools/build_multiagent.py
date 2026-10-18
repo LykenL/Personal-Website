@@ -39,7 +39,7 @@ XFADE = 0.15                    # crossfade length between segments, seconds
 ZOOM_IN = 0.55                  # seconds to push from full view into the focus box
 ZOOM_OUT = 0.55                 # seconds to pull back out
 CRF = 26
-BOTTOM_BAND = 0.26             # fraction of the page height promoted to centre in full view
+BOTTOM_BAND_PAD = 0.06     # gap below the composer before the crop bottom             # fraction of the page height promoted to centre in full view
 
 
 def page_frame():
@@ -60,6 +60,25 @@ def run(cmd):
 # Segment definitions. Focus boxes are fractions of the PAGE frame (x,y,w,h).
 # Every box is 16:9 so it maps 1:1 onto the 1920x1080 output with no letterbox.
 # ---------------------------------------------------------------------------
+
+def focus_box_right(cy, frac=0.66, right=0.965):
+    """A 16:9 box whose right edge sits at `right` of the page width.
+
+    Used when the subject must not leave a gap on the right: the window always
+    ends where the content ends, so nothing blank is exposed.
+    """
+    page = page_frame()
+    pw, ph = page[2], page[3]
+    w = pw * frac
+    h = w * 9 / 16
+    if h > ph:
+        h = ph
+        w = h * 16 / 9
+    x = pw * right - w
+    x = min(max(x, 0), pw - w)
+    y = min(max(cy * ph - h / 2, 0), ph - h)
+    return (x / pw, y / ph, w / pw, h / ph)
+
 
 def focus_box(cx, cy, frac=0.62):
     """Build a 16:9 box of width `frac` of the page, centred on (cx, cy)."""
@@ -84,12 +103,12 @@ SEGMENTS = [
      "speed": 1.0, "label": "prompt"},
     # centre-right: the response pane
     {"s": 62.0, "e": 73.0, "focus": focus_box(0.58, 0.52, 0.70),
-     "speed": 1.25, "label": "llm-output"},
+     "speed": 1.25, "label": "llm-output", "hold": True},
     # bottom-right: chart area (skip top 1/5 and left 1/5 of the page)
     {"s": 78.0, "e": 86.0, "focus": focus_box(0.62, 0.64, 0.66),
      "speed": 1.1, "label": "chart"},
     # source code: same band as the chart but moved left by ~1/5 of the page width
-    {"s": 87.0, "e": 92.0, "focus": focus_box(0.42, 0.64, 0.66),
+    {"s": 87.0, "e": 92.0, "focus": focus_box_right(0.64, 0.66),
      "speed": 1.1, "label": "code"},
 ]
 
@@ -105,14 +124,18 @@ def crop_expressions(seg):
         # page is moved up so it sits in the middle of the frame, and the space it
         # vacates is filled with black. This keeps the text being typed legible
         # instead of shrunk to a strip at the bottom.
-        band_top = py + ph * (1 - BOTTOM_BAND)
-        band_h = ph * BOTTOM_BAND
-        # Take the widest slice of the bottom band and scale it to fill the frame
-        # height, so the composer reads large. Anything wider than 16:9 is cropped
-        # from the band; the leftover is black above/below when it is narrower.
-        band_w = min(pw, band_h * 16 / 9)
-        band_x = px + (pw - band_w) / 2
-        return (f"crop={int(band_w)}:{int(band_h)}:{int(band_x)}:{int(band_top)},"
+        # Frame the dialog column: a 16:9 window spanning the dialog's horizontal
+        # extent, ending at the composer. Measured content runs x=0.035..0.963 of
+        # the page. Scaling up (not padding) keeps the composer large.
+        content_left, content_right = 0.035, 0.963
+        band_w = pw * (content_right - content_left)
+        band_h = band_w * 9 / 16
+        band_x = px + pw * content_left
+        # Anchor the window's bottom just below the composer so the text being
+        # typed sits in the lower-middle of the frame.
+        band_bottom = py + ph * (1 - BOTTOM_BAND_PAD)
+        band_top = max(band_bottom - band_h, py)
+        return (f"crop={int(band_w)}:{int(band_bottom - band_top)}:{int(band_x)}:{int(band_top)},"
                 f"scale={OUT_W}:{OUT_H}:force_original_aspect_ratio=increase,"
                 f"crop={OUT_W}:{OUT_H},setsar=1")
 
@@ -130,9 +153,14 @@ def crop_expressions(seg):
     # smoothstep for ease-in-out
     ss = lambda v: f"(if(lt({v},0),0,if(gt({v},1),1,{v}*{v}*(3-2*{v}))))"
 
-    # progress: 0->1 over the push-in, 1 during hold, 1->0 over the pull-out
-    prog = (f"if(lt(t,{ZOOM_IN}),{ss(f't/{ZOOM_IN}')},"
-            f"if(gt(t,{dur - ZOOM_OUT}),{ss(f'({dur}-t)/{ZOOM_OUT}')},1))")
+    # progress: 0->1 over the push-in, then 1 (hold). Segments flagged "hold"
+    # stay zoomed in and rely on the crossfade to the next segment, so they never
+    # pull back out.
+    if seg.get("hold"):
+        prog = f"if(lt(t,{ZOOM_IN}),{ss(f't/{ZOOM_IN}')},1)"
+    else:
+        prog = (f"if(lt(t,{ZOOM_IN}),{ss(f't/{ZOOM_IN}')},"
+                f"if(gt(t,{dur - ZOOM_OUT}),{ss(f'({dur}-t)/{ZOOM_OUT}')},1))")
 
     # width shrinks from full_w to bw as progress rises
     cw = f"({full_w}-({full_w}-{bw})*{prog})"
