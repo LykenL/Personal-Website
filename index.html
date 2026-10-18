@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=12">
+    <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body class="lang-en">
     <!-- Dynamic Background Elements -->
@@ -154,16 +154,16 @@
                             </h4>
                             <ul>
                                 <li class="typewriter">
-                                    <span class="lang-zh"><strong>智能体引擎：</strong>构建两步推理循环（探索架构 -> 运行代码），内置动态速率限制与防提示词注入（Recency Bias Fix）安全护栏。</span>
-                                    <span class="lang-en"><strong>Agentic Engine:</strong> Uses a two-step reasoning loop (Scan Schema -> Execute Code) with dynamic rate-limiting and prompt injection safeguards.</span>
+                                    <span class="lang-zh"><strong>自纠正执行：</strong>大多数 NL2SQL 演示只返回一条查询就结束。这里的模型输出运行在沙箱中，报错会连同真实列名和出错行号一起回传给模型，因此一个错误的 <code>agg({'id': ...})</code> 能在同一轮对话里被修正。这正是让演示变成业务用户真正能完成任务的工具的关键——他们看不到堆栈信息，只看到答案。</span>
+                                    <span class="lang-en"><strong>Self-correcting execution:</strong> Most NL2SQL demos return a query and hope. Here the model's output runs inside a sandbox whose error goes back to the model with the real column names and the failing line, so a wrong <code>agg({'id': ...})</code> is fixed inside the same turn. That's what turns a demo into something a business user can actually finish a task with — they never see the stack trace, they see the answer.</span>
                                 </li>
                                 <li class="typewriter">
-                                    <span class="lang-zh"><strong>人机协同架构：</strong>采用三栏式“极客风”界面（历史记录 | 数据库架构 | 工作区），支持“直接执行”与“仅预览 SQL”的安全沙箱模式。</span>
-                                    <span class="lang-en"><strong>Human-in-the-Loop UI:</strong> Features a 3-column Hacker Theme layout with a safe dual-execution flow ("Execute Query" vs "Preview SQL Only").</span>
+                                    <span class="lang-zh"><strong>证据而非仅答案：</strong>真正执行过的脚本会与叙述内容并排展示。对话里给出带数字的结论，Generated Script 面板里则是可执行的产物。这是数据场景中非技术用户的信任机制——他们不审 SQL，但他们的数据团队可以；而且脚本是从真实工具调用中提取的，而不是根据模型叙述重建的（这点很关键：叙述中的代码会与真正执行的内容产生偏差）。</span>
+                                    <span class="lang-en"><strong>Evidence, not just an answer:</strong> The script that really ran is shown beside the prose. The chat carries findings with numbers; the Generated Script pane carries the executable artifact. This is the trust mechanism for non-technical users in a data context — they don't check the SQL, but their data team can, and it's already extracted from the actual tool call rather than reconstructed from the model's prose (which matters: prose code drifts from what executed).</span>
                                 </li>
                                 <li class="typewriter">
-                                    <span class="lang-zh"><strong>量化评测与效率：</strong>在包含多重陷阱的严苛测试集上达到 75% 任务成功率 (6/8)，且查询的 Token 开销实现极致优化（约 1500 tokens/次）。</span>
-                                    <span class="lang-en"><strong>Evaluation & Efficiency:</strong> Achieved 75% Task Success Rate (6/8) on rigorous benchmark cases with highly optimized token efficiency (~1500 tokens/query).</span>
+                                    <span class="lang-zh"><strong>记忆即方法论，而非对话记录：</strong>片段式 SQLite 保存原始对话；后台压缩智能体将其蒸馏进 ChromaDB，因此新会话通过 kNN 检索过往的推理过程，而不是重放 token。用户能感知到的好处，正是分析师通常提供的那份东西——“我们已经确认过，revenue 指的是发票表上的 SUM(Total)，不是明细行”——它会跨会话保留下来。</span>
+                                    <span class="lang-en"><strong>Memory as methodology, not transcript:</strong> Episodic SQLite holds the literal conversation; a background compression agent distills it into ChromaDB, so a new session retrieves the past reasoning with kNN instead of replaying tokens. The user-visible payoff is the thing an analyst normally provides — “we already worked out that revenue means SUM(Total) on invoices, not line items” survives the session.</span>
                                 </li>
                             </ul>
                         </div>

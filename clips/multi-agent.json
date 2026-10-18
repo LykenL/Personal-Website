@@ -1,5 +1,5 @@
 {
-  "source": "raw/multi-agent.mov",
+  "source": "raw/multiagent_record.mov",
   "out": "videos/multi-agent",
   "segments": [
     {
