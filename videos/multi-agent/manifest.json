@@ -1,8 +1,8 @@
 {
   "output": "/Users/lykenl/Documents/Personal_website/portfolio/videos/multi-agent/clip.mp4",
   "poster": "/Users/lykenl/Documents/Personal_website/portfolio/videos/multi-agent/poster.jpg",
-  "bytes": 5534897,
-  "poster_bytes": 164263,
+  "bytes": 5386845,
+  "poster_bytes": 146419,
   "segments": [
     {
       "label": "prompt",

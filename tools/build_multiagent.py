@@ -135,9 +135,15 @@ def crop_expressions(seg):
         # typed sits in the lower-middle of the frame.
         band_bottom = py + ph * (1 - BOTTOM_BAND_PAD)
         band_top = max(band_bottom - band_h, py)
+        # Shift the scaled frame up by 1/3 of the output height; the vacated area
+        # at the bottom is padded black. pad height is +2/3 so the frame can move
+        # without ever exposing the edge.
+        shift = int(OUT_H / 3)
         return (f"crop={int(band_w)}:{int(band_bottom - band_top)}:{int(band_x)}:{int(band_top)},"
                 f"scale={OUT_W}:{OUT_H}:force_original_aspect_ratio=increase,"
-                f"crop={OUT_W}:{OUT_H},setsar=1")
+                f"crop={OUT_W}:{OUT_H},setsar=1,"
+                f"pad={OUT_W}:{OUT_H + shift}:0:0:color=black,"
+                f"crop={OUT_W}:{OUT_H}:0:{shift}")
 
     fx, fy, fw, fh = seg["focus"]
     # focus box in source pixels
