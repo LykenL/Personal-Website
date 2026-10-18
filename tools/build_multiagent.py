@@ -39,6 +39,7 @@ XFADE = 0.15                    # crossfade length between segments, seconds
 ZOOM_IN = 0.55                  # seconds to push from full view into the focus box
 ZOOM_OUT = 0.55                 # seconds to pull back out
 CRF = 26
+FRAME_RIGHT = 0.965            # right edge of page content, used for the code window
 BOTTOM_BAND_PAD = 0.06     # gap below the composer before the crop bottom             # fraction of the page height promoted to centre in full view
 
 
@@ -62,6 +63,7 @@ def run(cmd):
 # ---------------------------------------------------------------------------
 
 def focus_box_right(cy, frac=0.66, right=0.965):
+    # `right` is the page fraction where the visible window ends.
     """A 16:9 box whose right edge sits at `right` of the page width.
 
     Used when the subject must not leave a gap on the right: the window always
@@ -76,6 +78,25 @@ def focus_box_right(cy, frac=0.66, right=0.965):
         w = h * 16 / 9
     x = pw * right - w
     x = min(max(x, 0), pw - w)
+    y = min(max(cy * ph - h / 2, 0), ph - h)
+    return (x / pw, y / ph, w / pw, h / ph)
+
+
+def focus_box_left(x_left, cy, right=0.965):
+    """A 16:9 box starting at `x_left` of the page width.
+
+    Used when the left edge of a pane has to be visible: the window begins at the
+    pane border and extends right until it runs out of content or reaches a 16:9
+    aspect, whichever comes first.
+    """
+    page = page_frame()
+    pw, ph = page[2], page[3]
+    w = pw * (right - x_left)
+    h = w * 9 / 16
+    if h > ph:                     # keep it inside the page
+        h = ph
+        w = h * 16 / 9
+    x = pw * x_left
     y = min(max(cy * ph - h / 2, 0), ph - h)
     return (x / pw, y / ph, w / pw, h / ph)
 
@@ -108,8 +129,11 @@ SEGMENTS = [
     {"s": 78.0, "e": 86.0, "focus": focus_box(0.62, 0.64, 0.66),
      "speed": 1.1, "label": "chart"},
     # source code: same band as the chart but moved left by ~1/5 of the page width
-    {"s": 87.0, "e": 92.0, "focus": focus_box_right(0.64, 0.66),
-     "speed": 1.1, "label": "code"},
+    # source code: whole script pane visible, its left border flush with the frame
+    # code text starts at 0.551 of the page and ends at 0.958 (measured):
+    # pin the text's left edge to the frame's left edge
+    {"s": 87.0, "e": 92.0, "focus": focus_box_left(0.551, 0.64, 0.958),
+     "speed": 1.1, "label": "code", "align_left": True},
 ]
 
 
@@ -177,7 +201,13 @@ def crop_expressions(seg):
     fcy = by + bh / 2
     win_x = px + pw / 2 - full_w / 2
     win_y = py + ph / 2 - full_h / 2
-    cx = f"min(max({fcx}-{cw}/2,{win_x}),{win_x}+{full_w}-{cw})"
+    # Horizontal anchor: by default centre on the focus box. Segments flagged
+    # "align_left" pin the box's LEFT edge to frame x=0 instead, so a pane's own
+    # left border is visible (clamped so the window never leaves the page content).
+    if seg.get("align_left"):
+        cx = f"min(max({bx}+{bw}-{cw},{win_x}),{win_x}+{full_w}-{cw})"
+    else:
+        cx = f"min(max({fcx}-{cw}/2,{win_x}),{win_x}+{full_w}-{cw})"
     cy = f"min(max({fcy}-{ch}/2,{win_y}),{win_y}+{full_h}-{ch})"
 
     return (f"crop=w='{cw}':h='{ch}':x='{cx}':y='{cy}',"
