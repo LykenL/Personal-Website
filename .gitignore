@@ -14,8 +14,10 @@ __pycache__/
 _verify_*.html
 .verify_tmp/
 
-# Source footage (large) — never commit raw recordings
-raw/
+# Source footage (large) — never commit raw recordings, but keep the folder
+raw/*
+!raw/.gitkeep
+!raw/README.txt
 *.mov
 
 # Generated clips come from tools/clip_video.py. Ignored by default;
