@@ -67,6 +67,14 @@ def box(cx, cy, frac=0.6):
     return (x / PAGE_W, (y - PAGE_TOP) / PAGE_H, w / PAGE_W, h / PAGE_H)
 
 
+# Chat column bounds in the source frame, with a little context either side so the
+# dialogue pane's left and right borders are both inside the shot.
+# Chat column: full width (both borders visible), height trimmed to the 16:9
+# band that the column width allows (~48% of the frame), anchored slightly high.
+# user spec: left 1/5 .. 3/4 of the width, full height
+CHAT_COLUMN = (0.20, 0.0, 0.55, 1.0)
+
+
 def wide(cx=0.5, cy=0.5, frac=0.86):
     return box(cx, cy, frac)
 
@@ -80,22 +88,30 @@ SEGMENTS = [
     {"s": 31.0, "e": 34.0, "focus": box(0.20, 0.42, 0.40), "label": "nut-toggle"},
     # sending: composer + send button
     {"s": 34.5, "e": 36.0, "focus": box(0.58, 0.50, 0.62), "label": "send"},
-    # answer streaming: middle column, FULL height (no vertical crop)
-    {"s": 37.0, "e": 64.0, "focus": (0.29, 0.02, 0.49, 0.96), "label": "streaming",
-     "no_zoom": True},
-    # cursor selects the italic disclaimer
-    {"s": 77.0, "e": 80.0, "focus": box(0.52, 0.40, 0.60), "label": "italics"},
+    # answer streaming. The dead wait (37-69s) is cut: frames there are identical.
+    # The chat column runs x 0.30..0.77 -- keep its full height AND both side borders.
+    {"s": 70.0, "e": 76.0, "focus": CHAT_COLUMN, "label": "streaming",
+     "no_zoom": True, "contain": True},
+    # cursor selects the grey italic disclaimer line
+    {"s": 76.0, "e": 80.0, "focus": box(0.52, 0.55, 0.62), "label": "italics"},
     # right-hand sources column
-    {"s": 81.0, "e": 91.0, "focus": box(0.84, 0.48, 0.44), "label": "sources"},
+    {"s": 81.0, "e": 91.0, "focus": box(0.86, 0.45, 0.34), "label": "sources"},
     # pull back to the whole interface, then fade
     {"s": 92.0, "e": 95.5, "focus": None, "label": "outro"},
 ]
 
 
 def fit():
-    """Fill 1920x1080 without exposing an edge."""
+    """Fill 1920x1080 without exposing an edge (crop overflow)."""
     return (f"scale={OUT_W}:{OUT_H}:force_original_aspect_ratio=increase,"
             f"crop={OUT_W}:{OUT_H}:x=(iw-{OUT_W})/2:y=(ih-{OUT_H})/2,setsar=1")
+
+
+def contain_fit():
+    """Keep EVERYTHING in frame: fit inside and pad. Used when the crop is taller
+    than 16:9 and cropping would cut away content (e.g. the chat column borders)."""
+    return (f"scale={OUT_W}:{OUT_H}:force_original_aspect_ratio=decrease,"
+            f"pad={OUT_W}:{OUT_H}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1")
 
 
 def expr_for(seg):
@@ -110,8 +126,15 @@ def expr_for(seg):
     by = PAGE_TOP + PAGE_H * fy
 
     if seg.get("no_zoom"):
-        # fixed window, no push-in: the streaming region must stay rock steady
-        return (f"crop={int(bw)}:{int(bh)}:{int(bx)}:{int(by)},{fit()}"), dur
+        # fixed window, no push-in: the streaming region must stay rock steady.
+        # contain_fit keeps the pane's left AND right borders in frame even though
+        # the column is taller than 16:9.
+        if seg.get("exact"):
+            # already 16:9 -> scale straight up, nothing else
+            return (f"crop={int(bw)}:{int(bh)}:{int(bx)}:{int(by)},"
+                    f"scale={OUT_W}:{OUT_H},setsar=1"), dur
+        f = contain_fit() if seg.get("contain") else fit()
+        return (f"crop={int(bw)}:{int(bh)}:{int(bx)}:{int(by)},{f}"), dur
 
     ss = lambda v: f"(if(lt({v},0),0,if(gt({v},1),1,{v}*{v}*(3-2*{v}))))"
     prog = f"if(lt(t,{ZOOM_IN}),{ss(f't/{ZOOM_IN}')},1)"
@@ -155,27 +178,45 @@ def build(dry=False):
         print(f"\ntotal: {total:.2f}s across {len(parts)} segments")
         return
 
-    inputs = []
-    for p, _, _ in parts:
-        inputs += ["-i", p]
+    # --- Transitions -----------------------------------------------------------
+    # xfade re-times both inputs over the overlap, which slides/scales the incoming
+    # frame into place -- that is the "camera jumps back to the top-left" shake.
+    # Fix: give every clip its own short dissolve (fade in from black over the first
+    # XFADE, out to black over the last) and concatenate. Nothing is retimed, so no
+    # frame is ever displaced; the joins read as a soft dissolve, not a pan.
+    faded = []
+    for i, (path, dur, label) in enumerate(parts):
+        out = os.path.join(TMP, f"fade{i:02d}.mp4")
+        if i == 0:
+            vf = f"fade=t=in:st=0:d={XFADE}:color=black"
+        elif i == len(parts) - 1:
+            vf = f"fade=t=in:st=0:d={XFADE}:color=black"
+        else:
+            vf = (f"fade=t=in:st=0:d={XFADE}:color=black,"
+                  f"fade=t=out:st={max(dur - XFADE, 0):.3f}:d={XFADE}:color=black")
+        run([FFMPEG, "-y", "-i", path, "-vf", vf,
+             "-c:v", "libx264", "-preset", "medium", "-crf", str(CRF),
+             "-pix_fmt", "yuv420p", out])
+        faded.append(out)
 
-    filters = []
-    prev = "[0:v]"
-    acc = parts[0][1]
-    for i in range(1, len(parts)):
-        offset = acc - XFADE
-        label = f"[x{i}]" if i < len(parts) - 1 else "[linked]"
-        filters.append(f"{prev}[{i}:v]xfade=transition=fade:duration={XFADE}:offset={offset:.3f}{label}")
-        prev = label
-        acc = offset + parts[i][1]
-
-    end_start = acc - ENDING_FADE
-    filters.append(f"[linked]fade=t=out:st={end_start:.3f}:d={ENDING_FADE}:color=black,"
-                   f"format=yuv420p[vout]")
+    lst = os.path.join(TMP, "concat.txt")
+    with open(lst, "w") as fh:
+        for f in faded:
+            fh.write(f"file '{f}'\n")
 
     final = os.path.join(OUT, "clip.mp4")
-    run([FFMPEG, "-y", *inputs, "-filter_complex", ";".join(filters),
-         "-map", "[vout]", "-an",
+    run([FFMPEG, "-y", "-f", "concat", "-safe", "0", "-i", lst,
+         "-c:v", "libx264", "-preset", "slow", "-crf", str(CRF),
+         "-pix_fmt", "yuv420p", "-profile:v", "high", "-level", "4.1",
+         "-movflags", "+faststart", final])
+    acc = sum(d for _, d, _ in parts)
+
+    # global ending: fade the joined stream to black over its last seconds
+    out_tmp = os.path.join(TMP, "joined.mp4")
+    os.replace(final, out_tmp)
+    end_start = acc - ENDING_FADE
+    run([FFMPEG, "-y", "-i", out_tmp,
+         "-vf", f"fade=t=out:st={end_start:.3f}:d={ENDING_FADE}:color=black",
          "-c:v", "libx264", "-preset", "slow", "-crf", str(CRF),
          "-pix_fmt", "yuv420p", "-profile:v", "high", "-level", "4.1",
          "-movflags", "+faststart", final])
