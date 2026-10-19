@@ -192,14 +192,10 @@ def crop_expressions(seg):
     # smoothstep for ease-in-out
     ss = lambda v: f"(if(lt({v},0),0,if(gt({v},1),1,{v}*{v}*(3-2*{v}))))"
 
-    # progress: 0->1 over the push-in, then 1 (hold). Segments flagged "hold"
-    # stay zoomed in and rely on the crossfade to the next segment, so they never
-    # pull back out.
-    if seg.get("hold"):
-        prog = f"if(lt(t,{ZOOM_IN}),{ss(f't/{ZOOM_IN}')},1)"
-    else:
-        prog = (f"if(lt(t,{ZOOM_IN}),{ss(f't/{ZOOM_IN}')},"
-                f"if(gt(t,{dur - ZOOM_OUT}),{ss(f'({dur}-t)/{ZOOM_OUT}')},1))")
+    # progress: push in once, then hold. Never pull back out -- returning to the
+    # wide shot before a cut makes the camera jump on every transition, which reads
+    # as violent shake. The next segment crossfades from this framing instead.
+    prog = f"if(lt(t,{ZOOM_IN}),{ss(f't/{ZOOM_IN}')},1)"
 
     # width shrinks from full_w to bw as progress rises
     cw = f"({full_w}-({full_w}-{bw})*{prog})"

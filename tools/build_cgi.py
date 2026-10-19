@@ -141,11 +141,11 @@ def expr_for(seg):
     bx = px + pw * fx
     by = py + ph * fy
 
-    t_in = ZOOM_IN / dur
-    t_out = 1 - ZOOM_OUT / dur
     ss = lambda v: f"(if(lt({v},0),0,if(gt({v},1),1,{v}*{v}*(3-2*{v}))))"
-    prog = (f"if(lt(t,{ZOOM_IN}),{ss(f't/{ZOOM_IN}')},"
-            f"if(gt(t,{dur - ZOOM_OUT}),{ss(f'({dur}-t)/{ZOOM_OUT}')},1))")
+    # Push in once and HOLD. Never pull back out: returning to the wide shot before
+    # the crossfade makes the camera jump across the page on every cut, which reads
+    # as violent shake. The next segment simply crossfades from this framing.
+    prog = f"if(lt(t,{ZOOM_IN}),{ss(f't/{ZOOM_IN}')},1)"
 
     cw = f"({pw}-({pw}-{bw})*{prog})"
     ch = f"({cw}*9/16)"
