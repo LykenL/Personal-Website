@@ -96,7 +96,7 @@ SEGMENTS = [
     # cursor selects the grey italic disclaimer line
     {"s": 76.0, "e": 80.0, "focus": box(0.52, 0.55, 0.62), "label": "italics"},
     # right-hand sources column
-    {"s": 81.0, "e": 91.0, "focus": box(0.86, 0.45, 0.34), "label": "sources"},
+    {"s": 81.0, "e": 91.0, "focus": box(0.80, 0.45, 0.60), "label": "sources"},
     # pull back to the whole interface, then fade
     {"s": 92.0, "e": 95.5, "focus": None, "label": "outro"},
 ]
