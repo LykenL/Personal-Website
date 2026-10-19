@@ -1,8 +1,8 @@
 {
   "output": "/Users/lykenl/Documents/Personal_website/portfolio/videos/recipe-rag/clip.mp4",
   "poster": "/Users/lykenl/Documents/Personal_website/portfolio/videos/recipe-rag/poster.jpg",
-  "bytes": 3917432,
-  "total_seconds": 37.0,
+  "bytes": 4095890,
+  "total_seconds": 34.1,
   "segments": [
     {
       "label": "new-chat",
@@ -18,7 +18,7 @@
     },
     {
       "label": "send",
-      "seconds": 1.5
+      "seconds": 0.7
     },
     {
       "label": "streaming",

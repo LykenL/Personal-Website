@@ -71,8 +71,9 @@ def box(cx, cy, frac=0.6):
 # dialogue pane's left and right borders are both inside the shot.
 # Chat column: full width (both borders visible), height trimmed to the 16:9
 # band that the column width allows (~48% of the frame), anchored slightly high.
-# user spec: left 1/5 .. 3/4 of the width, full height
-CHAT_COLUMN = (0.20, 0.0, 0.55, 1.0)
+# The user's 1/5..3/4 band is what to EMPHASISE, not what to crop away:
+# frame the full interface, with that band dominating the shot.
+CHAT_COLUMN = (0.06, 0.0, 0.80, 1.0)
 
 
 def wide(cx=0.5, cy=0.5, frac=0.86):
@@ -87,7 +88,7 @@ SEGMENTS = [
     # cursor reaches the Nut allergy toggle (y ~0.43 in the sidebar)
     {"s": 31.0, "e": 34.0, "focus": box(0.20, 0.42, 0.40), "label": "nut-toggle"},
     # sending: composer + send button
-    {"s": 34.5, "e": 36.0, "focus": box(0.58, 0.50, 0.62), "label": "send"},
+    {"s": 34.5, "e": 35.2, "focus": box(0.58, 0.50, 0.62), "label": "send"},
     # answer streaming. The dead wait (37-69s) is cut: frames there are identical.
     # The chat column runs x 0.30..0.77 -- keep its full height AND both side borders.
     {"s": 70.0, "e": 76.0, "focus": CHAT_COLUMN, "label": "streaming",
@@ -179,43 +180,49 @@ def build(dry=False):
         return
 
     # --- Transitions -----------------------------------------------------------
-    # xfade re-times both inputs over the overlap, which slides/scales the incoming
-    # frame into place -- that is the "camera jumps back to the top-left" shake.
-    # Fix: give every clip its own short dissolve (fade in from black over the first
-    # XFADE, out to black over the last) and concatenate. Nothing is retimed, so no
-    # frame is ever displaced; the joins read as a soft dissolve, not a pan.
-    faded = []
+    # Two earlier attempts were wrong:
+    #   xfade  -> re-times both inputs, so the incoming frame slides into place
+    #             (the "camera jumps to the top-left" shake).
+    #   fade in/out + concat -> every join passes through a black frame.
+    # Correct approach: trim each clip by the overlap, then dissolve the next clip
+    # ON TOP of the previous one with blend=all_expr, driven by a time-based alpha.
+    # Nothing is retimed and no frame is ever fully black.
+    trimmed = []
     for i, (path, dur, label) in enumerate(parts):
-        out = os.path.join(TMP, f"fade{i:02d}.mp4")
-        if i == 0:
-            vf = f"fade=t=in:st=0:d={XFADE}:color=black"
-        elif i == len(parts) - 1:
-            vf = f"fade=t=in:st=0:d={XFADE}:color=black"
-        else:
-            vf = (f"fade=t=in:st=0:d={XFADE}:color=black,"
-                  f"fade=t=out:st={max(dur - XFADE, 0):.3f}:d={XFADE}:color=black")
-        run([FFMPEG, "-y", "-i", path, "-vf", vf,
+        d = dur - XFADE if i < len(parts) - 1 else dur
+        out = os.path.join(TMP, f"trim{i:02d}.mp4")
+        run([FFMPEG, "-y", "-i", path, "-t", f"{max(d, 0.1):.3f}",
              "-c:v", "libx264", "-preset", "medium", "-crf", str(CRF),
              "-pix_fmt", "yuv420p", out])
-        faded.append(out)
+        trimmed.append((out, max(d, 0.1)))
 
-    lst = os.path.join(TMP, "concat.txt")
-    with open(lst, "w") as fh:
-        for f in faded:
-            fh.write(f"file '{f}'\n")
+    fparts = []
+    # segment 0 arrives from black once, at the very start
+    fparts.append(f"[0:v]fade=t=in:st=0:d={XFADE}:color=black,format=rgba[b0]")
+    prev = "[b0]"
+    acc = trimmed[0][1]
+    for i in range(1, len(trimmed)):
+        # next clip is delayed so it starts inside the previous one's tail
+        off = max(acc - XFADE, 0)
+        fparts.append(f"[{i}:v]format=rgba,setpts=PTS+{off}/TB[n{i}]")
+        # alpha ramps 0->1 across the overlap window
+        fparts.append(
+            f"{prev}[n{i}]blend=all_expr='A*(1-min(1,max(0,(T-{off})/{XFADE})))+"
+            f"B*min(1,max(0,(T-{off})/{XFADE}))'[bl{i}]")
+        prev = f"[bl{i}]"
+        acc = off + trimmed[i][1]
 
+    fparts.append(f"{prev}format=yuv420p[joined]")
+    joined = os.path.join(TMP, "dissolved.mp4")
+    run([FFMPEG, "-y", *[a for out, _ in trimmed for a in ("-i", out)],
+         "-filter_complex", ";".join(fparts), "-map", "[joined]", "-an",
+         "-c:v", "libx264", "-preset", "medium", "-crf", str(CRF),
+         "-pix_fmt", "yuv420p", joined])
     final = os.path.join(OUT, "clip.mp4")
-    run([FFMPEG, "-y", "-f", "concat", "-safe", "0", "-i", lst,
-         "-c:v", "libx264", "-preset", "slow", "-crf", str(CRF),
-         "-pix_fmt", "yuv420p", "-profile:v", "high", "-level", "4.1",
-         "-movflags", "+faststart", final])
-    acc = sum(d for _, d, _ in parts)
 
     # global ending: fade the joined stream to black over its last seconds
-    out_tmp = os.path.join(TMP, "joined.mp4")
-    os.replace(final, out_tmp)
     end_start = acc - ENDING_FADE
-    run([FFMPEG, "-y", "-i", out_tmp,
+    run([FFMPEG, "-y", "-i", joined,
          "-vf", f"fade=t=out:st={end_start:.3f}:d={ENDING_FADE}:color=black",
          "-c:v", "libx264", "-preset", "slow", "-crf", str(CRF),
          "-pix_fmt", "yuv420p", "-profile:v", "high", "-level", "4.1",
