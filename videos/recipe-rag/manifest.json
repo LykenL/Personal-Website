@@ -1,0 +1,42 @@
+{
+  "output": "/Users/lykenl/Documents/Personal_website/portfolio/videos/recipe-rag/clip.mp4",
+  "poster": "/Users/lykenl/Documents/Personal_website/portfolio/videos/recipe-rag/poster.jpg",
+  "bytes": 5047102,
+  "total_seconds": 55.95,
+  "segments": [
+    {
+      "label": "new-chat",
+      "seconds": 2.0
+    },
+    {
+      "label": "typing",
+      "seconds": 7.0
+    },
+    {
+      "label": "nut-toggle",
+      "seconds": 3.0
+    },
+    {
+      "label": "send",
+      "seconds": 1.5
+    },
+    {
+      "label": "streaming",
+      "seconds": 27.0
+    },
+    {
+      "label": "italics",
+      "seconds": 3.0
+    },
+    {
+      "label": "sources",
+      "seconds": 10.0
+    },
+    {
+      "label": "outro",
+      "seconds": 3.5
+    }
+  ],
+  "crossfade": 0.15,
+  "ending_fade": 1.3
+}

@@ -177,24 +177,42 @@
                     </div>
                 </div>
                 
-                <!-- Project 1 -->
-                <div class="project-card reveal glass-panel">
-
-                    <div class="project-info">
-                        <div class="tags">
-                            <span class="tag">Python</span>
-                            <span class="tag">LLM</span>
-                            <span class="tag">React</span>
-                            <span class="tag">FastAPI</span>
+                <!-- Project 1: Agentic RecipeRAG -->
+                <div class="project-card project-card--media reveal glass-panel">
+                    <div class="project-media">
+                        <div class="media-frame" id="rag-video-slot">
+                            <video id="rag-video" class="media-video" muted loop playsinline
+                                   preload="none" poster="videos/recipe-rag/poster.jpg"
+                                   data-src="videos/recipe-rag/clip.mp4"></video>
+                            <div class="media-placeholder">
+                                <i class="fa-solid fa-circle-play"></i>
+                                <span class="lang-zh">演示视频占位 · 1920×1080</span>
+                                <span class="lang-en">Demo video placeholder · 1920×1080</span>
+                            </div>
+                            <button class="media-toggle" type="button" aria-label="Play demo video">
+                                <i class="fa-solid fa-play"></i>
+                            </button>
+                            <div class="media-scrim"></div>
+                            <div class="media-overlay">
+                                <h3 class="typewriter">
+                                    <span class="lang-zh">智能食谱检索生成系统 (Agentic RecipeRAG)</span>
+                                    <span class="lang-en">Agentic RecipeRAG</span>
+                                </h3>
+                                <p class="tagline">
+                                    <span class="lang-zh">具备自主决策与量化评估框架的检索生成系统</span>
+                                    <span class="lang-en">RAG System with Autonomous Decision &amp; Quantifiable Evaluation</span>
+                                </p>
+                                <div class="tags">
+                                    <span class="tag">Python</span>
+                                    <span class="tag">LLM</span>
+                                    <span class="tag">React</span>
+                                    <span class="tag">FastAPI</span>
+                                </div>
+                            </div>
                         </div>
-                        <h3 class="typewriter">
-                            <span class="lang-zh">智能食谱检索生成系统 (Agentic RecipeRAG)</span>
-                            <span class="lang-en">Agentic RecipeRAG</span>
-                        </h3>
-                        <p class="tagline">
-                            <span class="lang-zh">具备自主决策与量化评估框架的检索生成系统</span>
-                            <span class="lang-en">RAG System with Autonomous Decision & Quantifiable Evaluation</span>
-                        </p>
+                    </div>
+
+                    <div class="project-body">
                         <p class="description typewriter">
                             <span class="lang-zh">设计并实现了一个基于 ReAct 架构的自主型 RAG (Agentic RAG) 系统，将传统的“硬编码逻辑路由”重构为“大模型原生工具调用”，并建立了一套自动化质量评估体系。</span>
                             <span class="lang-en">Designed and implemented an Agentic RAG system based on the ReAct architecture, refactoring traditional "hard-coded routing" into "native LLM tool-calling," along with an automated quality evaluation pipeline.</span>
