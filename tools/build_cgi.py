@@ -92,7 +92,7 @@ SEGMENTS = [
     # "Workload Trend - Last 8 Quarters": marker at y=0.553, chart below-left
     {"s": 48.0, "e": 55.0, "focus": box(0.40, 0.73, 0.46), "speed": 1.0, "label": "trend"},
     # tool switch in the black sidebar
-    {"s": 55.5, "e": 57.5, "focus": box(0.17, 0.38, 0.28), "speed": 1.0, "label": "tool-switch"},
+    {"s": 55.5, "e": 57.5, "focus": box(0.20, 0.26, 0.34), "speed": 1.0, "label": "tool-switch"},
     # "RFP Input" column, then drift down to the Analyze RFP button.
     # Smaller window (0.44 page width) so there is vertical room to travel without
     # the window bottom reaching the page edge.
@@ -103,7 +103,7 @@ SEGMENTS = [
     # conclusion + results: runs to 1:50, then fades out. The page scrolls from the
     # blue retrieval note down to the Risk Flags colour blocks over this span.
     {"s": 86.0, "e": 110.0, "focus": box(0.67, 0.45, 0.55), "speed": 1.0,
-     "label": "conclusion"},
+     "label": "conclusion", "speed_at": [{"at": 90.0, "mult": 2.0}]},
 ]
 
 
@@ -205,6 +205,36 @@ def build(dry=False):
         dur = (seg["e"] - seg["s"]) / seg["speed"]
         vf = expr_for(seg)
         out = os.path.join(TMP, f"seg{i:02d}.mp4")
+
+        if seg.get("speed_at"):
+            # Multiple speeds inside one segment: split at the change points, render
+            # each piece at its own rate, then concatenate.
+            pieces = []
+            marks = [seg["s"]] + [c["at"] for c in seg["speed_at"]] + [seg["e"]]
+            rates = [seg["speed"]] + [c["mult"] for c in seg["speed_at"]]
+            for k, (a, b) in enumerate(zip(marks, marks[1:])):
+                if b <= a:
+                    continue
+                piece = os.path.join(TMP, f"seg{i:02d}_p{k}.mp4")
+                pvf = f"setpts=PTS/{rates[k]},fps={FPS},{vf},format=yuv420p"
+                run([FFMPEG, "-y", "-ss", f"{a}", "-to", f"{b}", "-i", SRC, "-an",
+                     "-vf", pvf, "-c:v", "libx264", "-preset", "medium",
+                     "-crf", str(CRF), "-pix_fmt", "yuv420p", "-r", str(FPS), piece])
+                pieces.append(piece)
+            lst = os.path.join(TMP, f"seg{i:02d}_list.txt")
+            with open(lst, "w") as fh:
+                for piece in pieces:
+                    fh.write(f"file '{piece}'\n")
+            run([FFMPEG, "-y", "-f", "concat", "-safe", "0", "-i", lst,
+                 "-c", "copy", out])
+            dur = sum((b - a) / r for (a, b), r in
+                      zip(zip(marks, marks[1:]), rates))
+            if dry:
+                print(f"[{i}] {seg['label']}: split @ {seg['speed_at']} -> {dur:.2f}s")
+            else:
+                print(f"rendering {seg['label']} ({dur:.2f}s, split)...")
+            parts.append((out, dur, seg["label"]))
+            continue
 
         vf = f"setpts=PTS/{seg['speed']},fps={FPS},{vf},format=yuv420p"
         cmd = [FFMPEG, "-y", "-ss", f"{seg['s']}", "-to", f"{seg['e']}",
