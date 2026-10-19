@@ -1,8 +1,8 @@
 {
   "output": "/Users/lykenl/Documents/Personal_website/portfolio/videos/rfp-optimizer/clip.mp4",
   "poster": "/Users/lykenl/Documents/Personal_website/portfolio/videos/rfp-optimizer/poster.jpg",
-  "bytes": 3841530,
-  "total_seconds": 33.95,
+  "bytes": 6995429,
+  "total_seconds": 56.95,
   "segments": [
     {
       "label": "bar-chart",
@@ -26,7 +26,7 @@
     },
     {
       "label": "tool-switch",
-      "seconds": 1.0
+      "seconds": 2.0
     },
     {
       "label": "rfp-input",
@@ -34,7 +34,7 @@
     },
     {
       "label": "conclusion",
-      "seconds": 2.0
+      "seconds": 24.0
     }
   ],
   "crossfade": 0.15,

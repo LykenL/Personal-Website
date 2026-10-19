@@ -83,26 +83,26 @@ SEGMENTS = [
     # bar chart: the plot body sits mid-panel (title marker at y=0.188)
     {"s": 8.0, "e": 12.0, "focus": box(0.47, 0.58, 0.66), "speed": 1.0, "label": "bar-chart"},
     # donut: identical window, slid right
-    {"s": 13.0, "e": 18.0, "focus": box(0.775, 0.42, 0.66), "speed": 1.0,
+    {"s": 13.0, "e": 18.0, "focus": box(0.775, 0.36, 0.66), "speed": 1.0,
      "label": "donut", "pan_right": True},
     # filters column (left column of the assignment tool)
-    {"s": 24.0, "e": 33.0, "focus": box(0.48, 0.50, 0.52), "speed": 1.5, "label": "filters"},
+    {"s": 24.0, "e": 33.0, "focus": box(0.48, 0.50, 0.70), "speed": 1.5, "label": "filters"},
     # "Current Load vs Historical Average": title marker at y=0.175, chart 0.19..0.40
     {"s": 44.0, "e": 47.0, "focus": box(0.62, 0.29, 0.66), "speed": 1.0, "label": "history"},
     # "Workload Trend - Last 8 Quarters": marker at y=0.553, chart below-left
     {"s": 48.0, "e": 55.0, "focus": box(0.40, 0.73, 0.46), "speed": 1.0, "label": "trend"},
     # tool switch in the black sidebar
-    {"s": 56.0, "e": 57.0, "focus": box(0.17, 0.38, 0.28), "speed": 1.0, "label": "tool-switch"},
+    {"s": 55.5, "e": 57.5, "focus": box(0.17, 0.38, 0.28), "speed": 1.0, "label": "tool-switch"},
     # "RFP Input" column, then drift down to the Analyze RFP button.
     # Smaller window (0.44 page width) so there is vertical room to travel without
     # the window bottom reaching the page edge.
     # start higher and use a smaller window so the downward travel stays fully
     # inside the page (the page is only ~0.95 of the cropped frame tall)
-    {"s": 59.0, "e": 66.0, "focus": box(0.44, 0.30, 0.40), "speed": 1.0,
+    {"s": 59.0, "e": 66.0, "focus": box(0.44, 0.30, 0.55), "speed": 1.0,
      "label": "rfp-input", "scroll_down": True},
-    # blue conclusion callout. It is only on screen 86-88s (it scrolls off by 89s),
-    # so this is a short beat rather than the originally planned 24s hold.
-    {"s": 86.0, "e": 88.0, "focus": box(0.67, 0.18, 0.42), "speed": 1.0,
+    # conclusion + results: runs to 1:50, then fades out. The page scrolls from the
+    # blue retrieval note down to the Risk Flags colour blocks over this span.
+    {"s": 86.0, "e": 110.0, "focus": box(0.67, 0.45, 0.55), "speed": 1.0,
      "label": "conclusion"},
 ]
 
