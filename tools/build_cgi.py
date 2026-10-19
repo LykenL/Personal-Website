@@ -83,7 +83,7 @@ SEGMENTS = [
     # bar chart: the plot body sits mid-panel (title marker at y=0.188)
     {"s": 8.0, "e": 12.0, "focus": box(0.47, 0.58, 0.66), "speed": 1.0, "label": "bar-chart"},
     # donut: identical window, slid right
-    {"s": 13.0, "e": 18.0, "focus": box(0.775, 0.36, 0.66), "speed": 1.0,
+    {"s": 13.0, "e": 18.0, "focus": box(0.775, 0.58, 0.60), "speed": 1.0,
      "label": "donut", "pan_right": True},
     # filters column (left column of the assignment tool)
     {"s": 24.0, "e": 33.0, "focus": box(0.48, 0.50, 0.70), "speed": 1.5, "label": "filters"},
@@ -98,8 +98,8 @@ SEGMENTS = [
     # the window bottom reaching the page edge.
     # start higher and use a smaller window so the downward travel stays fully
     # inside the page (the page is only ~0.95 of the cropped frame tall)
-    {"s": 59.0, "e": 66.0, "focus": box(0.44, 0.30, 0.55), "speed": 1.0,
-     "label": "rfp-input", "scroll_down": True},
+    {"s": 59.0, "e": 66.0, "focus": box(0.58, 0.44, 0.62), "speed": 1.0,
+     "label": "rfp-input", "scroll_up_start": 0.10},
     # conclusion + results: runs to 1:50, then fades out. The page scrolls from the
     # blue retrieval note down to the Risk Flags colour blocks over this span.
     {"s": 86.0, "e": 110.0, "focus": box(0.67, 0.45, 0.55), "speed": 1.0,
@@ -163,6 +163,16 @@ def expr_for(seg):
             cy = f"min(max({fcy}-{ch}/2,{py}),{py}+{ph}-{ch})"
             return (f"crop=w='{cw}':h='{ch}':x='{cx}':y='{cy}',"
                     f"{cover_fit()}")
+
+    # scroll_up_start: begin the window higher than the focus centre and ease down
+    # to it. Needed when the page is itself scrolling under a fixed crop.
+    if seg.get("scroll_up_start"):
+        lift = ph * seg["scroll_up_start"]
+        y_off = f"({-lift}*(1-{prog}))"
+        cx = f"min(max({fcx}-{cw}/2,{px}),{px}+{pw}-{cw})"
+        cy = f"min(max({fcy}-{ch}/2+{y_off},{py}),{py}+{ph}-{ch})"
+        return (f"crop=w='{cw}':h='{ch}':x='{cx}':y='{cy}',"
+                f"{cover_fit()}")
 
     # scroll_down: drift the window downward to reveal the button below.
     # The travel is clamped so the window's bottom never passes the page bottom,
