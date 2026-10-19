@@ -54,15 +54,23 @@ def run(cmd):
 
 
 def box(cx, cy, frac=0.62):
-    """16:9 focus box centred on (cx, cy) as fractions of the page area."""
+    """16:9 focus box centred on (cx, cy), kept inside the page's usable band.
+
+    The page is slightly taller than 16:9, so a 16:9 window only fits within a band
+    `usable_h` tall. Clamping to that band (rather than the full page) is what stops
+    the final cover-fit from cropping content or exposing black edges.
+    """
     _, _, pw, ph = page_frame()
+    usable_h = min(ph, pw * 9 / 16) if pw * 9 / 16 < ph else ph
     w = pw * frac
     h = w * 9 / 16
-    if h > ph:
-        h = ph
+    # keep this box within the usable 16:9 band
+    if h > usable_h:
+        h = usable_h
         w = h * 16 / 9
+    band_top = (ph - usable_h) / 2      # centre the band vertically
     x = min(max(cx * pw - w / 2, 0), pw - w)
-    y = min(max(cy * ph - h / 2, 0), ph - h)
+    y = min(max(cy * ph - h / 2, band_top), band_top + usable_h - h)
     return (x / pw, y / ph, w / pw, h / ph)
 
 
