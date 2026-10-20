@@ -166,10 +166,10 @@ h1, h2, h3, h4 {
 }
 
 #navbar.scrolled {
-    background: rgba(10, 10, 15, 0.8);
-    backdrop-filter: blur(10px);
+    background: transparent;
+    backdrop-filter: none;
     padding: 1rem 0;
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: none;
 }
 
 .nav-content {
