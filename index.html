@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=15">
+    <link rel="stylesheet" href="style.css?v=16">
 </head>
 <body class="lang-en">
     <!-- Dynamic Background Elements -->
@@ -235,11 +235,96 @@
                                     <span class="lang-en"><strong>Production Guardrails:</strong> Applied strict safety guardrails via precise prompt engineering to block irrelevant requests.</span>
                                 </li>
                                 <li class="typewriter">
-                                    <span class="lang-zh"><strong>量化评测：</strong>开发自动化 Benchmark，引入 LLM-as-a-Judge 进行语义量化打分</span>
-                                    <span class="lang-en"><strong>Quantifiable Eval:</strong> Developed an automated benchmark using the LLM-as-a-Judge paradigm for semantic scoring.</span>
+                                    <span class="lang-zh"><strong>三层评测体系：</strong>检索层用标准 IR 指标，生成层用 Ragas，智能体层记录工具调用效率</span>
+                                    <span class="lang-en"><strong>Three-layer evaluation:</strong> Standard IR metrics for retrieval, Ragas for end-to-end generation, and agent telemetry for tool-use efficiency.</span>
                                 </li>
                             </ul>
                         </div>
+
+                        <!-- Evaluation results: headline numbers first, detail beneath -->
+                        <div class="eval-panel">
+                            <div class="eval-head">
+                                <h4>
+                                    <span class="lang-zh">评测结果</span>
+                                    <span class="lang-en">Evaluation Results</span>
+                                </h4>
+                                <span class="eval-meta">
+                                    <span class="lang-zh">10 条领域基准 · 8 条可答 / 2 条不可答</span>
+                                    <span class="lang-en">10-query domain benchmark · 8 answerable / 2 unanswerable</span>
+                                </span>
+                            </div>
+
+                            <div class="eval-group-label">
+                                <span class="lang-zh">检索层</span>
+                                <span class="lang-en">Retrieval</span>
+                                <span class="eval-group-hint">
+                                    <span class="lang-zh">标准 IR 指标</span>
+                                    <span class="lang-en">standard IR metrics</span>
+                                </span>
+                            </div>
+                            <div class="eval-grid">
+                                <div class="eval-stat is-perfect">
+                                    <span class="eval-value">1.00</span>
+                                    <span class="eval-name">Recall@5</span>
+                                </div>
+                                <div class="eval-stat is-perfect">
+                                    <span class="eval-value">1.00</span>
+                                    <span class="eval-name">
+                                        <span class="lang-zh">无匹配准确率</span>
+                                        <span class="lang-en">No-match Acc</span>
+                                    </span>
+                                </div>
+                                <div class="eval-stat">
+                                    <span class="eval-value">0.95</span>
+                                    <span class="eval-name">nDCG@5</span>
+                                </div>
+                                <div class="eval-stat">
+                                    <span class="eval-value">0.94</span>
+                                    <span class="eval-name">MRR</span>
+                                </div>
+                            </div>
+
+                            <div class="eval-group-label">
+                                <span class="lang-zh">生成层</span>
+                                <span class="lang-en">Generation</span>
+                                <span class="eval-group-hint">
+                                    <span class="lang-zh">Ragas · 8 条可答问题</span>
+                                    <span class="lang-en">Ragas · 8 answerable queries</span>
+                                </span>
+                            </div>
+                            <div class="eval-grid">
+                                <div class="eval-stat">
+                                    <span class="eval-value">0.92</span>
+                                    <span class="eval-name">Faithfulness</span>
+                                </div>
+                                <div class="eval-stat">
+                                    <span class="eval-value">0.89</span>
+                                    <span class="eval-name">Context Precision</span>
+                                </div>
+                                <div class="eval-stat">
+                                    <span class="eval-value">0.77</span>
+                                    <span class="eval-name">Answer Relevancy</span>
+                                </div>
+                                <div class="eval-stat is-weak">
+                                    <span class="eval-value">0.75</span>
+                                    <span class="eval-name">Context Recall</span>
+                                </div>
+                            </div>
+
+                            <div class="eval-foot">
+                                <span>
+                                    <i class="fa-solid fa-bolt"></i>
+                                    <span class="lang-zh">1–2 次工具调用 / 2 轮推理 / 每题约 3–5 秒</span>
+                                    <span class="lang-en">1–2 tool calls · 2 reasoning iterations · ~3–5s per query</span>
+                                </span>
+                                <span>
+                                    <i class="fa-solid fa-arrow-trend-up"></i>
+                                    <span class="lang-zh">下一步：提升宽泛多答案问题的召回，整合多次检索的上下文</span>
+                                    <span class="lang-en">Next: lift recall on broad queries, consolidate multi-call contexts</span>
+                                </span>
+                            </div>
+                        </div>
+
                         <div class="project-actions">
                             <a href="https://recipe-rag-api.onrender.com/" target="_blank" class="btn btn-primary">
                                 <i class="fa-solid fa-rocket"></i> 
