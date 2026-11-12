@@ -441,6 +441,11 @@ h1, h2, h3, h4 {
     margin-bottom: 1.4rem;
 }
 
+/* the last grid closes the panel, so it needs no trailing gap */
+.eval-grid:last-child {
+    margin-bottom: 0;
+}
+
 .eval-stat {
     display: flex;
     flex-direction: column;
@@ -480,28 +485,6 @@ h1, h2, h3, h4 {
     font-size: 0.78rem;
     color: var(--text-muted);
     line-height: 1.35;
-}
-
-.eval-foot {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.6rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
-    font-size: 0.82rem;
-    color: var(--text-muted);
-}
-
-.eval-foot > span {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-}
-
-.eval-foot i {
-    color: var(--accent-1);
-    font-size: 0.8rem;
-    opacity: 0.9;
 }
 
 @media (max-width: 992px) {
