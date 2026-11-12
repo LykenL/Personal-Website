@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=18">
+    <link rel="stylesheet" href="style.css?v=19">
 </head>
 <body class="lang-en">
     <!-- Dynamic Background Elements -->
@@ -167,6 +167,106 @@
                                 </li>
                             </ul>
                         </div>
+                        <!-- Evaluation results on BIRD Mini-Dev -->
+                        <div class="eval-panel">
+                            <div class="eval-head">
+                                <h4>
+                                    <span class="lang-zh">评测结果</span>
+                                    <span class="lang-en">Evaluation Results</span>
+                                </h4>
+                                <span class="eval-meta">
+                                    <span class="lang-zh">BIRD Mini-Dev · SQLite · 500 题 · 11 个真实业务数据库</span>
+                                    <span class="lang-en">BIRD Mini-Dev · SQLite · 500 queries · 11 real-world databases</span>
+                                </span>
+                            </div>
+
+                            <div class="eval-group-label">
+                                <span class="lang-zh">核心指标</span>
+                                <span class="lang-en">Headline</span>
+                                <span class="eval-group-hint">
+                                    <span class="lang-zh">Execution Accuracy，行序无关，浮点容差</span>
+                                    <span class="lang-en">execution accuracy · order-independent · float tolerance</span>
+                                </span>
+                            </div>
+                            <div class="eval-grid">
+                                <div class="eval-stat is-perfect">
+                                    <span class="eval-value">75.0<span class="eval-unit">%</span></span>
+                                    <span class="eval-name">
+                                        <span class="lang-zh">执行准确率 EX</span>
+                                        <span class="lang-en">Execution Accuracy</span>
+                                    </span>
+                                </div>
+                                <div class="eval-stat is-perfect">
+                                    <span class="eval-value">+14.0<span class="eval-unit">pt</span></span>
+                                    <span class="eval-name">
+                                        <span class="lang-zh">较同基座官方报数</span>
+                                        <span class="lang-en">vs. same base model</span>
+                                    </span>
+                                </div>
+                                <div class="eval-stat">
+                                    <span class="eval-value">98.8<span class="eval-unit">%</span></span>
+                                    <span class="eval-name">
+                                        <span class="lang-zh">提交率</span>
+                                        <span class="lang-en">Submission rate</span>
+                                    </span>
+                                </div>
+                                <div class="eval-stat">
+                                    <span class="eval-value">12.6<span class="eval-unit">s</span></span>
+                                    <span class="eval-name">
+                                        <span class="lang-zh">中位耗时 / 题（4 并发）</span>
+                                        <span class="lang-en">Median latency (4-way)</span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="eval-group-label">
+                                <span class="lang-zh">与官方榜单对比</span>
+                                <span class="lang-en">Against the public leaderboard</span>
+                                <span class="eval-group-hint">
+                                    <span class="lang-zh">同为 BIRD Mini-Dev，EX 越高越好</span>
+                                    <span class="lang-en">same benchmark · higher EX is better</span>
+                                </span>
+                            </div>
+                            <ul class="eval-bars">
+                                <li class="eval-bar is-mine">
+                                    <div class="eval-bar-head">
+                                        <span class="eval-bar-name">
+                                            <span class="lang-zh">本项目 NL2SQL Agent</span>
+                                            <span class="lang-en">This project's NL2SQL Agent</span>
+                                        </span>
+                                        <span class="eval-bar-value">75.0%</span>
+                                    </div>
+                                    <div class="eval-bar-track"><span style="--v: 75.0%"></span></div>
+                                    <span class="eval-bar-note">
+                                        <span class="lang-zh">deepseek-flash · 低推理档 · 完整 agent harness</span>
+                                        <span class="lang-en">deepseek-flash · low reasoning effort · full agent harness</span>
+                                    </span>
+                                </li>
+                                <li class="eval-bar">
+                                    <div class="eval-bar-head">
+                                        <span class="eval-bar-name">Qwen3.8-Flash-Next</span>
+                                        <span class="eval-bar-value">70.2%</span>
+                                    </div>
+                                    <div class="eval-bar-track"><span style="--v: 70.2%"></span></div>
+                                    <span class="eval-bar-note">
+                                        <span class="lang-zh">官方榜单</span>
+                                        <span class="lang-en">official leaderboard</span>
+                                    </span>
+                                </li>
+                                <li class="eval-bar">
+                                    <div class="eval-bar-head">
+                                        <span class="eval-bar-name">DeepSeek-V4.1-Flash</span>
+                                        <span class="eval-bar-value">61.0%</span>
+                                    </div>
+                                    <div class="eval-bar-track"><span style="--v: 61.0%"></span></div>
+                                    <span class="eval-bar-note">
+                                        <span class="lang-zh">官方榜单 · 同为本项目基座模型</span>
+                                        <span class="lang-en">official leaderboard · this project's base model</span>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+
                         <div class="project-actions">
                             <a href="https://nl2sql-six.vercel.app/" target="_blank" class="btn btn-primary">
                                 <i class="fa-solid fa-rocket"></i> 
