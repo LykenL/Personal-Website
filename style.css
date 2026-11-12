@@ -476,13 +476,6 @@ h1, h2, h3, h4 {
     background-clip: text;
 }
 
-/* The one number that is an opportunity, not a win */
-.eval-stat.is-weak .eval-value {
-    background: linear-gradient(135deg, #fbbf24, #f87171);
-    -webkit-background-clip: text;
-    background-clip: text;
-}
-
 .eval-name {
     font-size: 0.78rem;
     color: var(--text-muted);
