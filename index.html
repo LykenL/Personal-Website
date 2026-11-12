@@ -135,7 +135,6 @@
                                     <span class="tag">ReAct Agent Loop</span>
                                     <span class="tag">Native Tool Calling</span>
                                     <span class="tag">Neon PostgreSQL</span>
-                                    <span class="tag">ChromaDB</span>
                                 </div>
                             </div>
                         </div>
@@ -144,8 +143,8 @@
                     <!-- Everything below the video -->
                     <div class="project-body">
                         <p class="description typewriter">
-                            <span class="lang-zh">基于前沿轻量级大模型构建，具备自主探索数据库、编写执行 Python/SQL 及渲染交互式图表的能力。采用双轨记忆系统 (SQLite + ChromaDB) 与后台异步压缩，提供高鲁棒性的 RAG 及多轮记忆交互</span>
-                            <span class="lang-en">Built around advanced lightweight LLMs, this agentic engine is capable of self-directed database schema exploration, native Python/SQL execution, and interactive chart rendering. It utilizes a dual memory system (SQLite & ChromaDB) with asynchronous compression for resilient RAG and multi-turn interaction.</span>
+                            <span class="lang-zh">基于轻量级前沿大模型（DeepSeek-V4.1-Flash）构建，能够自主探索数据库结构、原生执行 SQL 与 Python，并渲染交互式图表</span>
+                            <span class="lang-en">Built on a lightweight frontier LLM (DeepSeek-V4.1-Flash), this agent explores database schemas on its own, executes SQL and Python natively, and renders interactive charts.</span>
                         </p>
                         <div class="highlights">
                             <h4>
@@ -154,16 +153,16 @@
                             </h4>
                             <ul>
                                 <li class="typewriter">
-                                    <span class="lang-zh"><strong>自我纠错机制：</strong>很多同类工具问一句答一句，错了就卡在那里。这个系统跑出问题时会看懂报错、当场改好再重跑——用户看不到任何技术细节，只拿到结果</span>
-                                    <span class="lang-en"><strong>Fixes its own mistakes:</strong> Most similar tools answer once and stop, even when the answer is wrong. This one reads the error, corrects itself, and tries again in the same breath — the user never sees the technical mess, just the result.</span>
+                                    <span class="lang-zh"><strong>自我纠错机制：</strong>很多同类工具问一句答一句，错了就卡在那里。这个系统会把报错连同真实列名一起回传给模型，模型下一轮就能自行改正——用户看不到任何技术细节，只拿到结果</span>
+                                    <span class="lang-en"><strong>Fixes its own mistakes:</strong> Most similar tools answer once and stop, even when the answer is wrong. This one feeds the error back to the model along with the real column names, so it corrects itself on the next turn — the user never sees the technical mess, just the result.</span>
                                 </li>
                                 <li class="typewriter">
                                     <span class="lang-zh"><strong>答案可核对：</strong>对话里给出结论，旁边同时列出真正跑过的代码。非技术用户可以只看结论，数据团队则能随时翻开核对——数字和代码来自同一次执行，提高结果的可靠性</span>
                                     <span class="lang-en"><strong>Answers you can check:</strong> Every conclusion comes with the exact script that produced it. Non-technical users read the result; their data team can open the script and verify it — both come from the same run, so they always match.</span>
                                 </li>
                                 <li class="typewriter">
-                                    <span class="lang-zh"><strong>“记得”先在的对话：</strong>系统会把对话整理成要点存下来，下次开新会话还记得先前的结论，比如“revenue 指的是发票总额，不是明细行”。不用每次从头解释背景</span>
-                                    <span class="lang-en"><strong>Remembers what was settled:</strong> Past conversations are distilled into notes, so a new session picks up where the last one left off — things like "revenue means invoice totals, not line items" survive. No need to re-explain the context every time.</span>
+                                    <span class="lang-zh"><strong>口径有据可查：</strong>对话历史持久化在 SQLite 中；语义注册表保存已确认的指标定义（含草案/已确认/过期三种状态，支持人工确认），并在查询前校验——所以“revenue 指的是发票总额，不是明细行”是执行时强制的口径，而不必每次重新解释</span>
+                                    <span class="lang-en"><strong>Definitions that stick:</strong> Conversation history persists in SQLite, and a semantic registry holds confirmed metric definitions — with draft/confirmed/stale states and human sign-off — checked at query time, so "revenue means invoice totals, not line items" is enforced rather than re-explained every session.</span>
                                 </li>
                             </ul>
                         </div>
