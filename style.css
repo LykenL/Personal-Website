@@ -236,6 +236,13 @@ h1, h2, h3, h4 {
     max-width: 600px;
 }
 
+.hero-cta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
 /* Buttons */
 .btn {
     display: inline-flex;
@@ -260,6 +267,19 @@ h1, h2, h3, h4 {
 .btn-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(122, 34, 255, 0.5);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-main);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    background: rgba(0, 240, 255, 0.1);
+    border-color: var(--accent-1);
+    color: #fff;
 }
 
 .btn-disabled {
@@ -725,6 +745,26 @@ h1, h2, h3, h4 {
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
 }
 
+.media-overlay .partner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: fit-content;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid rgba(0, 240, 255, 0.55);
+    border-radius: 999px;
+    background: rgba(0, 240, 255, 0.14);
+    color: #fff;
+    font-weight: 700;
+    text-shadow: none;
+}
+
+.media-overlay .partner-badge strong {
+    color: var(--accent-1);
+    font-size: 1.12em;
+    letter-spacing: 0.04em;
+}
+
 .media-overlay .tags {
     margin-bottom: 0;
     gap: 0.4rem;
@@ -1130,8 +1170,27 @@ footer p {
     .hobbies-wide {
         margin-top: 3rem;
     }
-    
+
     .nav-links {
         display: none; /* simple mobile menu hidden for now */
+    }
+}
+
+@media (max-height: 760px) and (min-width: 769px) {
+    #hero .avatar-placeholder {
+        width: 136px;
+        height: 136px;
+        margin-bottom: 1.25rem;
+    }
+
+    #hero h1 {
+        font-size: 3.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    #hero .subtitle {
+        max-width: 760px;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
     }
 }
