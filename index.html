@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=22">
+    <link rel="stylesheet" href="style.css?v=23">
 </head>
 <body class="lang-en">
     <!-- Dynamic Background Elements -->
@@ -42,6 +42,12 @@
                     <a href="#projects">
                         <span class="lang-zh">项目展示</span>
                         <span class="lang-en">Projects</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#open-source">
+                        <span class="lang-zh">开源贡献</span>
+                        <span class="lang-en">Open Source</span>
                     </a>
                 </li>
                 <li>
@@ -545,6 +551,85 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </section>
+
+    <!-- Open Source Contributions -->
+    <section id="open-source">
+        <div class="container">
+            <h2 class="section-title reveal">
+                <span class="lang-zh">开源项目贡献</span>
+                <span class="lang-en">Open Source Contributions</span>
+            </h2>
+            <div class="opensource-grid">
+                <article class="opensource-card reveal glass-panel">
+                    <div class="opensource-card-header">
+                        <h3>AG2
+                            <span class="opensource-topic">
+                                <span class="lang-zh">工作流回合超时</span>
+                                <span class="lang-en">Workflow turn timeouts</span>
+                            </span>
+                        </h3>
+                        <span class="opensource-date">
+                            <span class="lang-zh">合并 · 2026.11</span>
+                            <span class="lang-en">Merged · 2026.11</span>
+                        </span>
+                    </div>
+                    <p class="opensource-summary">
+                        <span class="lang-zh">让工作流与讨论通道的回合超时真正生效，补齐定向告警、自动关闭和回归测试，避免通道因无人回复而卡住。</span>
+                        <span class="lang-en">Made turn timeouts work for workflow and discussion channels, adding targeted warnings, auto-close, and regression tests to prevent stalled conversations.</span>
+                    </p>
+                    <div class="tags opensource-tags">
+                        <span class="tag">⭐ 5.1k GitHub Stars</span>
+                        <span class="tag">Python</span>
+                    </div>
+                    <div class="opensource-links">
+                        <a href="https://github.com/ag2ai/ag2" target="_blank" rel="noopener noreferrer" class="opensource-link">
+                            <i class="fa-brands fa-github" aria-hidden="true"></i>
+                            <span class="lang-zh">项目仓库</span>
+                            <span class="lang-en">Repository</span>
+                        </a>
+                        <a href="https://github.com/ag2ai/ag2/pull/3703" target="_blank" rel="noopener noreferrer" class="opensource-link">
+                            <i class="fa-solid fa-code-branch" aria-hidden="true"></i>
+                            <span class="lang-zh">已合并 PR #3703</span>
+                            <span class="lang-en">Merged PR #3703</span>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="opensource-card reveal glass-panel">
+                    <div class="opensource-card-header">
+                        <h3>Agenta
+                            <span class="opensource-topic">
+                                <span class="lang-zh">Agent runtime 取消处理</span>
+                                <span class="lang-en">Agent runtime cancellation</span>
+                            </span>
+                        </h3>
+                        <span class="opensource-date">2026.09 – 2026.10</span>
+                    </div>
+                    <p class="opensource-summary">
+                        <span class="lang-zh">修复 Agent runtime 获取资源时的取消处理，让用户主动停止显示为“已取消”而非“失败”，并补充测试、保留原有错误处理。</span>
+                        <span class="lang-en">Fixed cancellation during Agent runtime resource acquisition so user-initiated stops show as “Cancelled,” not “Failed”; added tests while preserving existing error handling.</span>
+                    </p>
+                    <div class="tags opensource-tags">
+                        <span class="tag">⭐ 4.9k GitHub Stars</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">TypeScript</span>
+                    </div>
+                    <div class="opensource-links">
+                        <a href="https://github.com/Agenta-AI/agenta" target="_blank" rel="noopener noreferrer" class="opensource-link">
+                            <i class="fa-brands fa-github" aria-hidden="true"></i>
+                            <span class="lang-zh">项目仓库</span>
+                            <span class="lang-en">Repository</span>
+                        </a>
+                        <a href="https://github.com/Agenta-AI/agenta/pull/7476" target="_blank" rel="noopener noreferrer" class="opensource-link">
+                            <i class="fa-solid fa-code-branch" aria-hidden="true"></i>
+                            <span class="lang-zh">已合并 PR #7476</span>
+                            <span class="lang-en">Merged PR #7476</span>
+                        </a>
+                    </div>
+                </article>
             </div>
         </div>
     </section>

@@ -350,6 +350,100 @@ h1, h2, h3, h4 {
     font-weight: 500;
 }
 
+/* Open-source contributions */
+#open-source {
+    padding: 4rem 0 8rem;
+}
+
+.opensource-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    align-items: stretch;
+}
+
+.opensource-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    padding: 2rem;
+    border-radius: 24px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.045), rgba(0, 0, 0, 0.24));
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.opensource-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 240, 255, 0.35);
+}
+
+.opensource-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+}
+
+.opensource-card h3 {
+    font-size: 1.45rem;
+    line-height: 1.25;
+}
+
+.opensource-topic {
+    display: block;
+    margin-top: 0.4rem;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0;
+}
+
+.opensource-date {
+    flex-shrink: 0;
+    color: var(--accent-1);
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.opensource-summary {
+    color: var(--text-muted);
+    line-height: 1.7;
+}
+
+.opensource-tags {
+    margin: 0;
+}
+
+.opensource-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    margin-top: auto;
+    padding-top: 0.2rem;
+}
+
+.opensource-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--accent-1);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.opensource-link:hover {
+    color: #fff;
+}
+
 .project-info h3 {
     font-size: 2.2rem;
     margin-bottom: 0.5rem;
@@ -1173,6 +1267,14 @@ footer p {
 
     .nav-links {
         display: none; /* simple mobile menu hidden for now */
+    }
+
+    .opensource-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .opensource-card {
+        padding: 1.5rem;
     }
 }
 
